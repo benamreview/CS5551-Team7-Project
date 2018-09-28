@@ -11,7 +11,7 @@ import android.widget.Toast;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-public class activity_technician_register extends AppCompatActivity {
+public class TechnicianRegisterActivity extends AppCompatActivity {
 EditText name,contact, zip, specialization;
 Button btn;
 DatabaseReference dbr;
@@ -20,7 +20,8 @@ DatabaseReference dbr;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_technician_register);
-        dbr= FirebaseDatabase.getInstance().getReference("TechnicianDetails");
+        btn = (Button) findViewById(R.id.detailButton);
+        dbr= FirebaseDatabase.getInstance().getReference().child("Users").child("Technicians");
         name=(EditText)findViewById(R.id.editTextName);
         contact =(EditText)findViewById(R.id.editTextConatact);
         zip=(EditText)findViewById(R.id.editTextZip);
@@ -33,6 +34,7 @@ DatabaseReference dbr;
         });
     }
     public void addTechnician(){
+
         String techname = name.getText().toString().trim();
         String mobile = contact.getText().toString().trim();
         String zipcode = zip.getText().toString().trim();

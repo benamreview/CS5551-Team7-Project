@@ -31,6 +31,7 @@
         <activity android:name=".TechnicianLoginActivity" />
         <activity android:name=".MapActivity" />
         <activity android:name=".CustomerLoginActivity" />
+        <activity android:name=".TechnicianRegisterActivity" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").

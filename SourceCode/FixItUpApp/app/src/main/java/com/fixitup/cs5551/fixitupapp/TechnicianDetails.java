@@ -1,6 +1,7 @@
 package com.fixitup.cs5551.fixitupapp;
 
 public class TechnicianDetails {
+
     String name;
     String contact;
     String Zipcode;

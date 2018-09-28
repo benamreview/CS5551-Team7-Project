@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".activity_technician_register">
+    tools:context=".TechnicianRegisterActivity">
 
 
     <EditText
@@ -57,7 +57,7 @@ android:layout_marginTop="10dp"
         tools:layout_editor_absoluteY="293dp" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/detailButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="100dp"

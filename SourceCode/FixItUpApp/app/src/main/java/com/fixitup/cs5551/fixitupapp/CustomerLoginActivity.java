@@ -39,7 +39,7 @@ public class CustomerLoginActivity extends AppCompatActivity {
                 if (user != null){
                     //if not null, move to another activity, to be created later.
                     //Remember the current context!
-                    Intent intent = new Intent(CustomerLoginActivity.this, MapActivity.class);
+                    Intent intent = new Intent(CustomerLoginActivity.this, CustomerRegisterActivity.class);
                     startActivity(intent);
                     finish();
                     return;

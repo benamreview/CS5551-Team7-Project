@@ -40,7 +40,8 @@
 
         <activity
             android:name=".TechnicianMapActivity"
-            android:label="@string/title_activity_technician_map"></activity>
+            android:label="@string/title_activity_technician_map" />
+        <activity android:name=".activity_technician_register"></activity>
     </application>
 
 </manifest>

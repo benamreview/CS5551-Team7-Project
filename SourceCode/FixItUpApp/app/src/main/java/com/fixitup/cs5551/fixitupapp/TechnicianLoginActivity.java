@@ -59,11 +59,11 @@ public class TechnicianLoginActivity extends AppCompatActivity {
                 mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(TechnicianLoginActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        //If user has already signed up
+                        //If user has already signed up, therefore the createUserWithEmailandPassword would fail.
                         if (!task.isSuccessful()){
                             Toast.makeText(TechnicianLoginActivity.this, "Registration Failed!", Toast.LENGTH_SHORT).show();
                         }
-                        //If not, reference the database and add variables to it.
+                        //If the user email cannot be found in the database, reference the database and add variables to it.
                         else {
                             String user_id = mAuth.getCurrentUser().getUid(); //id assigned to Technician at moment of sign-up
                             //this database reference is pointing to the technicians

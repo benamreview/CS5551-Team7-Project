@@ -1,5 +1,6 @@
 package com.fixitup.cs5551.fixitupapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -40,8 +41,10 @@ public class CustomerRegisterActivity extends AppCompatActivity {
         String cMobile = contact.getText().toString().trim();
         String cZipcode = zip.getText().toString().trim();
         if (!TextUtils.isEmpty(cName)&& !TextUtils.isEmpty(cMobile)&& !TextUtils.isEmpty(cZipcode)) {
-            String id= dbr.push().getKey();
-            CustomerDetails cd = new CustomerDetails( custname, mobile, zipcode);
+            Intent intent = getIntent();
+            String id= intent.getStringExtra("user_id");
+            cEmail= intent.getStringExtra("user_email");
+            CustomerDetails cd = new CustomerDetails(cEmail, cName, cMobile, cZipcode);
             dbr.child(id).setValue(cd);
             Toast.makeText(this,"Customer is added",Toast.LENGTH_LONG).show();
         } else{

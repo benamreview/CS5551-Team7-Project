@@ -1,5 +1,6 @@
 package com.fixitup.cs5551.fixitupapp;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -34,18 +35,20 @@ DatabaseReference dbr;
         });
     }
     public void addTechnician(){
-
-        String techname = name.getText().toString().trim();
-        String mobile = contact.getText().toString().trim();
-        String zipcode = zip.getText().toString().trim();
-        String type = specialization.getText().toString().trim();
-        if (!TextUtils.isEmpty(techname)&& !TextUtils.isEmpty(mobile)&& !TextUtils.isEmpty(zipcode)&& !TextUtils.isEmpty(type)) {
-            String id= dbr.push().getKey();
-            TechnicianDetails td = new TechnicianDetails( techname, mobile,zipcode,type);
+        String tEmail = "";
+        String tName = name.getText().toString().trim();
+        String tMobile = contact.getText().toString().trim();
+        String tZipcode = zip.getText().toString().trim();
+        String tExpertise = specialization.getText().toString().trim();
+        if (!TextUtils.isEmpty(tName)&& !TextUtils.isEmpty(tMobile)&& !TextUtils.isEmpty(tZipcode)&& !TextUtils.isEmpty(tExpertise)) {
+            Intent intent = getIntent();
+            String id= intent.getStringExtra("user_id");
+            tEmail= intent.getStringExtra("user_email");
+            TechnicianDetails td = new TechnicianDetails( tEmail,tName,tMobile,tZipcode,tExpertise);
             dbr.child(id).setValue(td);
             Toast.makeText(this,"Technician is added",Toast.LENGTH_LONG).show();
         } else{
-            Toast.makeText(this,"please enter details",Toast.LENGTH_LONG).show();
+            Toast.makeText(this,"Please enter details",Toast.LENGTH_LONG).show();
         }
 
     }

@@ -35,10 +35,11 @@ public class CustomerRegisterActivity extends AppCompatActivity {
     }
     public void addCustomer(){
 
-        String custname = name.getText().toString().trim();
-        String mobile = contact.getText().toString().trim();
-        String zipcode = zip.getText().toString().trim();
-        if (!TextUtils.isEmpty(custname)&& !TextUtils.isEmpty(mobile)&& !TextUtils.isEmpty(zipcode)) {
+        String cEmail = "";
+        String cName = name.getText().toString().trim();
+        String cMobile = contact.getText().toString().trim();
+        String cZipcode = zip.getText().toString().trim();
+        if (!TextUtils.isEmpty(cName)&& !TextUtils.isEmpty(cMobile)&& !TextUtils.isEmpty(cZipcode)) {
             String id= dbr.push().getKey();
             CustomerDetails cd = new CustomerDetails( custname, mobile, zipcode);
             dbr.child(id).setValue(cd);

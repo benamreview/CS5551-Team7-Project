@@ -20,7 +20,7 @@ import com.google.firebase.database.FirebaseDatabase;
 public class TechnicianLoginActivity extends AppCompatActivity {
     private EditText mEmail, mPassword;
     private Button mLogin, mRegistration;
-
+    String user_id;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
     @Override
@@ -37,6 +37,8 @@ public class TechnicianLoginActivity extends AppCompatActivity {
                     //if not null, move to another activity, to be created later.
                     //Remember the current context!
                     Intent intent = new Intent(TechnicianLoginActivity.this, TechnicianRegisterActivity.class);
+                    intent.putExtra("user_id", user.getUid());
+                    intent.putExtra("user_email", user.getEmail());
                     startActivity(intent);
                     finish();
                     return;
@@ -65,10 +67,12 @@ public class TechnicianLoginActivity extends AppCompatActivity {
                         }
                         //If the user email cannot be found in the database, reference the database and add variables to it.
                         else {
-                            String user_id = mAuth.getCurrentUser().getUid(); //id assigned to Technician at moment of sign-up
+                            user_id = mAuth.getCurrentUser().getUid(); //id assigned to Technician at moment of sign-up
                             //this database reference is pointing to the technicians
                             DatabaseReference current_user_db = FirebaseDatabase.getInstance().getReference().child("Users").child("Technicians").child(user_id);
                             current_user_db.setValue(true);
+                            current_user_db = FirebaseDatabase.getInstance().getReference().child("Users").child("Technicians").child(user_id).child("email");
+                            current_user_db.setValue(email);
                         }
                     }
                 });

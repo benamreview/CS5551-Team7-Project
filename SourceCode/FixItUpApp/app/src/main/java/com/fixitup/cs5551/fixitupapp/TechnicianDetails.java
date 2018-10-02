@@ -1,18 +1,22 @@
 package com.fixitup.cs5551.fixitupapp;
 
 public class TechnicianDetails {
-
+    String email;
     String name;
     String contact;
-    String Zipcode;
+    String zipcode;
     String type;
 
-    public TechnicianDetails(String name, String contact, String zipcode, String type) {
-        this.name = name;
-        this.contact = contact;
-        Zipcode = zipcode;
-        this.type = type;
+    public TechnicianDetails(String Email, String Name, String Contact, String Zipcode, String Type) {
+        email = Email;
+        name = Name;
+        contact = Contact;
+        zipcode = Zipcode;
+        type = Type;
 
+    }
+    public String getEmail() {
+        return email;
     }
 
     public String getName() {
@@ -24,7 +28,7 @@ public class TechnicianDetails {
     }
 
     public String getZipcode() {
-        return Zipcode;
+        return zipcode;
     }
 
     public String getType() {

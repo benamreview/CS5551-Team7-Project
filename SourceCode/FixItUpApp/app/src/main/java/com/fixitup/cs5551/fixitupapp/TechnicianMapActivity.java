@@ -29,6 +29,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -39,10 +40,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+/*
+Location List:
 
+Plaza: 39.099790, -94.578560
+Plaza Apartment Center, 39.040010,-94.595630
+UMKC: 39.035790, -94.577890
+*/
 //Besides the default OnMapReadyCallback, we need to implement GoogleApiClient interfaces in order to update the map
 //more frequently (make it more continuous and in-motion, not statically working whenever a function is called)
-public class TechnicianMapActivity extends FragmentActivity implements LocationListener, OnMapReadyCallback, FetchAddressTask.OnTaskCompleted {
+public class TechnicianMapActivity extends FragmentActivity implements OnMapReadyCallback, FetchAddressTask.OnTaskCompleted {
     private GoogleMap mMap;
     FusedLocationProviderClient mFusedLocationProviderClient;
     private static final String TAG = TechnicianMapActivity.class.getSimpleName();
@@ -56,6 +63,7 @@ public class TechnicianMapActivity extends FragmentActivity implements LocationL
     Location mLastLocation;
     //In order for LocationRequest to work, we need to install the latest version of Google Play Service (dependencies tab in Project Structure)
     LocationRequest mLocationRequest;
+    private Marker currentLocationMarker;
     // Constants
     private static final int REQUEST_LOCATION_PERMISSION = 1;
     private static final int REQUEST_PICK_PLACE = 2;
@@ -63,7 +71,7 @@ public class TechnicianMapActivity extends FragmentActivity implements LocationL
     private LocationRequest getLocationRequest() {
         LocationRequest locationRequest = new LocationRequest();
         locationRequest.setInterval(10000);
-        locationRequest.setFastestInterval(5000);
+        locationRequest.setFastestInterval(7000);
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         return locationRequest;
     }
@@ -88,6 +96,12 @@ public class TechnicianMapActivity extends FragmentActivity implements LocationL
                 mLastKnownLocation=locationResult.getLastLocation();
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(mLastKnownLocation.getLatitude(),
                         mLastKnownLocation.getLongitude() )));
+                if (currentLocationMarker != null){
+                    currentLocationMarker.remove();
+                }
+                currentLocationMarker = mMap.addMarker(new MarkerOptions().position(new LatLng(mLastKnownLocation.getLatitude(),mLastKnownLocation.getLongitude() ))
+                        .title("Current Location"));
+                currentLocationMarker.setSnippet("Latitude: " + mLastKnownLocation.getLatitude() + ", Longitude:" + mLastKnownLocation.getLongitude());
             }
         };
     }
@@ -112,8 +126,9 @@ public class TechnicianMapActivity extends FragmentActivity implements LocationL
         //Based on the provided location permision
         //,turn on (or off) the My Location layer and the related control on the map.
         updateLocationUI();
-
+        //This will be called to move the camera to its initial position
         getDeviceLocation();
+
         //Based on the provided location permission,
         // Get the current location of the device and set the position of the map.
         startTrackingLocation();
@@ -243,36 +258,6 @@ public class TechnicianMapActivity extends FragmentActivity implements LocationL
         }
     }
     @Override
-    public void onLocationChanged(Location location) {
-        String latitude = String.valueOf(location.getLatitude());
-        String longitude = String.valueOf(location.getLongitude());
-
-        if (latitude.equalsIgnoreCase("0.0") && longitude.equalsIgnoreCase("0.0")) {
-            requestLocationUpdate();
-        } else {
-            //Perform Your Task with LatLong
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(),
-                    location.getLongitude() )));
-        }
-
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-
-    }
-
-    @Override
     protected void onPause() {
         super.onPause();
 
@@ -293,10 +278,6 @@ public class TechnicianMapActivity extends FragmentActivity implements LocationL
     @Override
     public void onTaskCompleted(String result) {
 
-    }
-    @SuppressLint("MissingPermission")
-    private void requestLocationUpdate() {
-        mFusedLocationProviderClient.requestLocationUpdates(getLocationRequest(), mLocationCallback, Looper.myLooper());
     }
 }
 

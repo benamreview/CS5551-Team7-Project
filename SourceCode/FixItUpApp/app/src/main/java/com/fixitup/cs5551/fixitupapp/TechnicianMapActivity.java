@@ -1,5 +1,6 @@
 package com.fixitup.cs5551.fixitupapp;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -7,6 +8,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.AsyncTask;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -15,7 +17,7 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
-
+import android.location.LocationListener;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationCallback;
@@ -40,7 +42,7 @@ import java.util.Locale;
 
 //Besides the default OnMapReadyCallback, we need to implement GoogleApiClient interfaces in order to update the map
 //more frequently (make it more continuous and in-motion, not statically working whenever a function is called)
-public class TechnicianMapActivity extends FragmentActivity implements OnMapReadyCallback, FetchAddressTask.OnTaskCompleted {
+public class TechnicianMapActivity extends FragmentActivity implements LocationListener, OnMapReadyCallback, FetchAddressTask.OnTaskCompleted {
     private GoogleMap mMap;
     FusedLocationProviderClient mFusedLocationProviderClient;
     private static final String TAG = TechnicianMapActivity.class.getSimpleName();
@@ -83,6 +85,9 @@ public class TechnicianMapActivity extends FragmentActivity implements OnMapRead
             public void onLocationResult(LocationResult locationResult) {
                 new FetchAddressTask(TechnicianMapActivity.this, TechnicianMapActivity.this)
                         .execute(locationResult.getLastLocation());
+                mLastKnownLocation=locationResult.getLastLocation();
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(mLastKnownLocation.getLatitude(),
+                        mLastKnownLocation.getLongitude() )));
             }
         };
     }
@@ -108,6 +113,7 @@ public class TechnicianMapActivity extends FragmentActivity implements OnMapRead
         //,turn on (or off) the My Location layer and the related control on the map.
         updateLocationUI();
 
+        getDeviceLocation();
         //Based on the provided location permission,
         // Get the current location of the device and set the position of the map.
         startTrackingLocation();
@@ -184,6 +190,88 @@ public class TechnicianMapActivity extends FragmentActivity implements OnMapRead
         }
     }
 
+    private void getDeviceLocation() {
+        /*
+         * Get the best and most recent location of the device, which may be null in rare
+         * cases when a location is not available.
+         */
+        try {
+            if (mLocationPermissionGranted) {
+                Task<Location> locationResult = mFusedLocationProviderClient.getLastLocation();
+                locationResult.addOnCompleteListener(this, new OnCompleteListener<Location>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Location> task) {
+                        if (task.isSuccessful()) {
+                            mLastKnownLocation = task.getResult();
+                            /*I modified this portion of the method because there is a tricky case
+                             * such that even the FusedLocationProviderClient's getLastLocation was successful,
+                             * the mLastKnownLocation is set to null for some reason. As a result,
+                             * the getLatitude() and getLongitude() will crash the app due to errors from trying to
+                             * access a null value*/
+                            if (mLastKnownLocation == null) {
+                                Log.d(TAG, "Current location is null. Using defaults.");
+                                Log.e(TAG, "Exception: %s", task.getException());
+                                mMap.moveCamera(CameraUpdateFactory
+                                        .newLatLngZoom(mDefaultLocation, DEFAULT_ZOOM));
+                                mMap.getUiSettings().setMyLocationButtonEnabled(false);
+                            } else {
+                                // Set the map's camera position to the current location of the device.
+
+                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                                        new LatLng(mLastKnownLocation.getLatitude(),
+                                                mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
+                                mMap.addMarker(new MarkerOptions().position(new LatLng(mLastKnownLocation.getLatitude(),mLastKnownLocation.getLongitude() ))
+                                        .title("Current Location"))
+                                        .setSnippet("Latitude: " + mLastKnownLocation.getLatitude() + ", Longitude:" + mLastKnownLocation.getLongitude());
+                                mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(mLastKnownLocation.getLatitude(),
+                                        mLastKnownLocation.getLongitude() )));
+
+
+                            }
+                        } else {
+                            Log.d(TAG, "Current location is null. Using defaults.");
+                            Log.e(TAG, "Exception: %s", task.getException());
+                            mMap.moveCamera(CameraUpdateFactory
+                                    .newLatLngZoom(mDefaultLocation, DEFAULT_ZOOM));
+                            mMap.getUiSettings().setMyLocationButtonEnabled(false);
+                        }
+                    }
+                });
+            }
+        } catch (SecurityException e)  {
+            Log.e("Exception: %s", e.getMessage());
+        }
+    }
+    @Override
+    public void onLocationChanged(Location location) {
+        String latitude = String.valueOf(location.getLatitude());
+        String longitude = String.valueOf(location.getLongitude());
+
+        if (latitude.equalsIgnoreCase("0.0") && longitude.equalsIgnoreCase("0.0")) {
+            requestLocationUpdate();
+        } else {
+            //Perform Your Task with LatLong
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(),
+                    location.getLongitude() )));
+        }
+
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
+    }
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -206,7 +294,10 @@ public class TechnicianMapActivity extends FragmentActivity implements OnMapRead
     public void onTaskCompleted(String result) {
 
     }
-
+    @SuppressLint("MissingPermission")
+    private void requestLocationUpdate() {
+        mFusedLocationProviderClient.requestLocationUpdates(getLocationRequest(), mLocationCallback, Looper.myLooper());
+    }
 }
 
 

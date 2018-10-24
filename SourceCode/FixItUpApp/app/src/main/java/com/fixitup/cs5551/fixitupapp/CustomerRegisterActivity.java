@@ -41,7 +41,7 @@ public class CustomerRegisterActivity extends AppCompatActivity {
         String cZipcode = zip.getText().toString().trim();
         if (!TextUtils.isEmpty(cName)&& !TextUtils.isEmpty(cMobile)&& !TextUtils.isEmpty(cZipcode)) {
             String id= dbr.push().getKey();
-            CustomerDetails cd = new CustomerDetails( custname, mobile, zipcode);
+            CustomerDetails cd = new CustomerDetails( cName, cMobile, cZipcode);
             dbr.child(id).setValue(cd);
             Toast.makeText(this,"Customer is added",Toast.LENGTH_LONG).show();
         } else{

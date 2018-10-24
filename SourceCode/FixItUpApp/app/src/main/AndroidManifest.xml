@@ -48,7 +48,8 @@
         <activity
             android:name=".TechnicianMapActivity"
             android:label="@string/title_activity_technician_map" />
-        <activity android:name=".CustomerRegisterActivity"></activity>
+        <activity android:name=".CustomerRegisterActivity" />
+        <activity android:name=".CustomerHome"></activity>
     </application>
 
 </manifest>

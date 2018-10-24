@@ -94,7 +94,7 @@ public class TechnicianMapActivity extends FragmentActivity implements OnMapRead
                 new FetchAddressTask(TechnicianMapActivity.this, TechnicianMapActivity.this)
                         .execute(locationResult.getLastLocation());
                 mLastKnownLocation=locationResult.getLastLocation();
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(mLastKnownLocation.getLatitude(),
+                mMap.animateCamera(CameraUpdateFactory.newLatLng(new LatLng(mLastKnownLocation.getLatitude(),
                         mLastKnownLocation.getLongitude() )));
                 if (currentLocationMarker != null){
                     currentLocationMarker.remove();

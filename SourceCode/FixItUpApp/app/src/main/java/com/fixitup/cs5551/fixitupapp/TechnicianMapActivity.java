@@ -18,6 +18,9 @@ import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.location.LocationListener;
+
+import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationCallback;
@@ -34,6 +37,10 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.events.EventHandler;
 
 import java.io.IOException;
@@ -96,12 +103,25 @@ public class TechnicianMapActivity extends FragmentActivity implements OnMapRead
                 mLastKnownLocation=locationResult.getLastLocation();
                 mMap.animateCamera(CameraUpdateFactory.newLatLng(new LatLng(mLastKnownLocation.getLatitude(),
                         mLastKnownLocation.getLongitude() )));
-                if (currentLocationMarker != null){
+                if (currentLocationMarker != null) {
                     currentLocationMarker.remove();
+                    currentLocationMarker = mMap.addMarker(new MarkerOptions().position(new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()))
+                            .title("Current Location"));
+                    currentLocationMarker.setSnippet("Latitude: " + mLastKnownLocation.getLatitude() + ", Longitude:" + mLastKnownLocation.getLongitude());
                 }
-                currentLocationMarker = mMap.addMarker(new MarkerOptions().position(new LatLng(mLastKnownLocation.getLatitude(),mLastKnownLocation.getLongitude() ))
-                        .title("Current Location"));
-                currentLocationMarker.setSnippet("Latitude: " + mLastKnownLocation.getLatitude() + ", Longitude:" + mLastKnownLocation.getLongitude());
+                //Update Address to GeoFire
+
+                String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("TechnicianAvailable");
+
+                GeoFire geoFire = new GeoFire(ref);
+                geoFire.setLocation(userID, new GeoLocation(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()), new GeoFire.CompletionListener(){
+                    @Override
+                    public void onComplete(String key, DatabaseError error) {
+                        //Do some stuff if you want to
+                    }
+                });
+
             }
         };
     }
@@ -278,6 +298,22 @@ public class TechnicianMapActivity extends FragmentActivity implements OnMapRead
     @Override
     public void onTaskCompleted(String result) {
 
+    }
+    @Override
+    protected void onStop() {
+        super.onStop();
+        //Update Address to GeoFire
+
+        String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("TechnicianAvailable");
+
+        GeoFire geoFire = new GeoFire(ref);
+        geoFire.removeLocation(userID, new GeoFire.CompletionListener(){
+            @Override
+            public void onComplete(String key, DatabaseError error) {
+                //Do some stuff if you want to
+            }
+        });
     }
 }
 

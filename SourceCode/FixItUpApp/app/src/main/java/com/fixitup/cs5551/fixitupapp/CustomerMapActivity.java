@@ -1,31 +1,24 @@
 package com.fixitup.cs5551.fixitupapp;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationListener;
-import android.os.AsyncTask;
-import android.os.Looper;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.text.TextUtils;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.util.Log;
-import android.location.LocationListener;
 import android.view.View;
 import android.widget.Button;
 
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
-import com.google.android.gms.common.ConnectionResult;
+import com.firebase.geofire.GeoQuery;
+import com.firebase.geofire.GeoQueryEventListener;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
@@ -37,31 +30,17 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.events.EventHandler;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-/*
-Location List:
-
-Plaza: 39.099790, -94.578560
-Plaza Apartment Center, 39.040010,-94.595630
-UMKC: 39.035790, -94.577890
-*/
-//Besides the default OnMapReadyCallback, we need to implement GoogleApiClient interfaces in order to update the map
-//more frequently (make it more continuous and in-motion, not statically working whenever a function is called)
-public class TechnicianMapActivity extends FragmentActivity implements OnMapReadyCallback, FetchAddressTask.OnTaskCompleted {
+public class CustomerMapActivity extends FragmentActivity implements OnMapReadyCallback, FetchAddressTask.OnTaskCompleted {
     private GoogleMap mMap;
-    private Button mLogout;
+    private Button mLogout, mRequest;
+    private LatLng repairLocation;
     FusedLocationProviderClient mFusedLocationProviderClient;
     private static final String TAG = TechnicianMapActivity.class.getSimpleName();
     boolean mLocationPermissionGranted;
@@ -90,7 +69,7 @@ public class TechnicianMapActivity extends FragmentActivity implements OnMapRead
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_technician_map);
+        setContentView(R.layout.activity_customer_map);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -103,18 +82,20 @@ public class TechnicianMapActivity extends FragmentActivity implements OnMapRead
         mLocationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
-                new FetchAddressTask(TechnicianMapActivity.this, TechnicianMapActivity.this)
+                new FetchAddressTask(CustomerMapActivity.this, CustomerMapActivity.this)
                         .execute(locationResult.getLastLocation());
                 mLastKnownLocation=locationResult.getLastLocation();
                 mMap.animateCamera(CameraUpdateFactory.newLatLng(new LatLng(mLastKnownLocation.getLatitude(),
                         mLastKnownLocation.getLongitude() )));
-                if (currentLocationMarker != null) {
+                /*if (currentLocationMarker != null) {
                     currentLocationMarker.remove();
                     currentLocationMarker = mMap.addMarker(new MarkerOptions().position(new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()))
                             .title("Current Location"));
                     currentLocationMarker.setSnippet("Latitude: " + mLastKnownLocation.getLatitude() + ", Longitude:" + mLastKnownLocation.getLongitude());
                 }
+                /* GeoFire - update real time location of customer is not needed
                 //Update Address to GeoFire
+
 
                 String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference("TechnicianAvailable");
@@ -126,7 +107,7 @@ public class TechnicianMapActivity extends FragmentActivity implements OnMapRead
                         //Do some stuff if you want to
                     }
                 });
-
+                */
             }
         };
         //Create Logout Button
@@ -135,12 +116,78 @@ public class TechnicianMapActivity extends FragmentActivity implements OnMapRead
 
             @Override
             public void onClick(View v) {
-               FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(TechnicianMapActivity.this, MainActivity.class);
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(CustomerMapActivity.this, MainActivity.class);
                 startActivity(intent);
             }
         });
+        mRequest = (Button) findViewById(R.id.request);
+        mRequest.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+               String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+               DatabaseReference ref = FirebaseDatabase.getInstance().getReference("customerRequest");
+               GeoFire geoFire = new GeoFire(ref);
+               getDeviceLocation();
+                geoFire.setLocation(userID, new GeoLocation(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()), new GeoFire.CompletionListener(){
+                    @Override
+                    public void onComplete(String key, DatabaseError error) {
+                        //Do some stuff if you want to
+                    }
+                });
+                repairLocation = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
+                mMap.addMarker(new MarkerOptions().position(repairLocation)
+                        .title("Repair Location"));
+                mRequest.setText("Sending request to Technicians...");
+            }
+        });
+
+        //Search for closest technician
+        getClosestTechnician();
     }
+    //Radius is 1km
+    private int radius = 1;
+    private Boolean technicianFound = false;
+    private String foundTechnicianID;
+    private void getClosestTechnician(){
+        final DatabaseReference technicianLocation = FirebaseDatabase.getInstance().getReference().child("TechnicianAvailable");
+        GeoFire geoFire = new GeoFire(technicianLocation);
+        GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(repairLocation.latitude, repairLocation.longitude), radius);
+        geoQuery.removeAllListeners();
+        geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
+            @Override
+            public void onKeyEntered(String key, GeoLocation location) {
+                technicianFound = true;
+            }
+
+            @Override
+            public void onKeyExited(String key) {
+
+            }
+
+            @Override
+            public void onKeyMoved(String key, GeoLocation location) {
+
+            }
+            //This function will be called as soon as the current query finishes with all the results
+            //within the radius
+            @Override
+            public void onGeoQueryReady() {
+                if (!technicianFound){
+                    radius++;
+                    getClosestTechnician();
+                }
+            }
+
+            @Override
+            public void onGeoQueryError(DatabaseError error) {
+
+            }
+        });
+    }
+
+
 
 
     /**
@@ -318,6 +365,7 @@ public class TechnicianMapActivity extends FragmentActivity implements OnMapRead
     @Override
     protected void onStop() {
         super.onStop();
+        /* We don't need real time update of Customers
         //Update Address to GeoFire
 
         String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -329,8 +377,9 @@ public class TechnicianMapActivity extends FragmentActivity implements OnMapRead
             public void onComplete(String key, DatabaseError error) {
                 //Do some stuff if you want to
             }
-        });
+        });*/
     }
 }
+
 
 

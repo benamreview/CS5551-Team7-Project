@@ -1,5 +1,6 @@
 package com.fixitup.cs5551.fixitupapp;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,7 +21,7 @@ import java.util.List;
 
 public class CustomerHome extends AppCompatActivity {
     ListView lv;
-
+    private Button mMapBtn;
     DatabaseReference dbr;
        TechnicianDetails td;
        ArrayList<String> list;
@@ -50,7 +51,19 @@ public class CustomerHome extends AppCompatActivity {
 
             }
         });
+        //Map Btn
+        //To-be-implemented: Display map on this screen.
+        mMapBtn = (Button) findViewById(R.id.mapBtn);
+        mMapBtn.setOnClickListener(new View.OnClickListener(){
 
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(CustomerHome.this, CustomerMapActivity.class);
+                startActivity(intent);
+                finish();
+                return;
+            }
+        });
     }
 
 

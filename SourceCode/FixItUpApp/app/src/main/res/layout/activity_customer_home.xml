@@ -13,7 +13,7 @@
         android:id="@+id/listView">
     </ListView>
     <Button
-        android:id="@+id/mapButton"
+        android:id="@+id/mapBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Go to Map"></Button>

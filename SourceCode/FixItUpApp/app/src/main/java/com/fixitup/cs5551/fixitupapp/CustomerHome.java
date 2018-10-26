@@ -37,6 +37,7 @@ public class CustomerHome extends AppCompatActivity {
         dbr.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                //To-be implemented: have a spinner and s
                 for(DataSnapshot ds: dataSnapshot.getChildren()){
                     td = ds.getValue(TechnicianDetails.class);
                     list.add(td.getName().toString()+"\n"+td.getEmail().toString()+"\n"+td.getContact().toString()+"\n "+td.getType().toString()+"\n"+td.getZipcode().toString());

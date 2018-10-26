@@ -54,11 +54,8 @@ public class CustomerRegisterActivity extends AppCompatActivity {
         } else if (cZipcode.isEmpty()) {
             zip.setError("Zipcode cannot be blank");
         }
-        else if(cZipcode.length()!=5){
+        else if (cZipcode.length()!=5){
             zip.setError("Enter a valid Zipcode ");
-       else  {
-            String id= dbr.push().getKey();
-            CustomerDetails cd = new CustomerDetails( cName, cMobile, cZipcode);
         }
         else  {
             String id= dbr.push().getKey();

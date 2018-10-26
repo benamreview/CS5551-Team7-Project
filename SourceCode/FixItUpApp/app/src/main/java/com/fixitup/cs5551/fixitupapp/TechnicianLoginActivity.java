@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -51,6 +52,8 @@ public class TechnicianLoginActivity extends AppCompatActivity {
         mPassword = (EditText) findViewById(R.id.password);
         mLogin = (Button) findViewById(R.id.login);
         mRegistration = (Button) findViewById(R.id.registration);
+        final String email = mEmail.getText().toString();
+        final String password = mPassword.getText().toString();
 
         mRegistration.setOnClickListener(new View.OnClickListener(){
 
@@ -58,24 +61,38 @@ public class TechnicianLoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 final String email = mEmail.getText().toString();
                 final String password = mPassword.getText().toString();
-                mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(TechnicianLoginActivity.this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        //If user has already signed up, therefore the createUserWithEmailandPassword would fail.
-                        if (!task.isSuccessful()){
-                            Toast.makeText(TechnicianLoginActivity.this, "Registration Failed!", Toast.LENGTH_SHORT).show();
+                if(email.isEmpty()){
+                    mEmail.setError("Email Address cannot be blank");
+                }
+                else if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+                    mEmail.setError("Enter a Valid Email");
+                }
+                else if(password.isEmpty()){
+                    mPassword.setError("Password cannot be blank");
+                }
+                else if(password.length()<6 && password.length()>12){
+                    mPassword.setError("Password should be of minimum 6 characters and maximum 12 characters");
+                }
+                else {
+                    mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(TechnicianLoginActivity.this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            //If user has already signed up, therefore the createUserWithEmailandPassword would fail.
+                            if (!task.isSuccessful()) {
+                                Toast.makeText(TechnicianLoginActivity.this, "Registration Failed!", Toast.LENGTH_SHORT).show();
+                            }
+                            //If the user email cannot be found in the database, reference the database and add variables to it.
+                            else {
+                                user_id = mAuth.getCurrentUser().getUid(); //id assigned to Technician at moment of sign-up
+                                //this database reference is pointing to the technicians
+                                DatabaseReference current_user_db = FirebaseDatabase.getInstance().getReference().child("Users").child("Technicians").child(user_id);
+                                current_user_db.setValue(true);
+                                current_user_db = FirebaseDatabase.getInstance().getReference().child("Users").child("Technicians").child(user_id).child("email");
+                                current_user_db.setValue(email);
+                            }
                         }
-                        //If the user email cannot be found in the database, reference the database and add variables to it.
-                        else {
-                            user_id = mAuth.getCurrentUser().getUid(); //id assigned to Technician at moment of sign-up
-                            //this database reference is pointing to the technicians
-                            DatabaseReference current_user_db = FirebaseDatabase.getInstance().getReference().child("Users").child("Technicians").child(user_id);
-                            current_user_db.setValue(true);
-                            current_user_db = FirebaseDatabase.getInstance().getReference().child("Users").child("Technicians").child(user_id).child("email");
-                            current_user_db.setValue(email);
-                        }
-                    }
-                });
+                    });
+                }
             }
         });
         mLogin.setOnClickListener(new View.OnClickListener() {

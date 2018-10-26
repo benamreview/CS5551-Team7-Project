@@ -40,16 +40,40 @@ DatabaseReference dbr;
         String tMobile = contact.getText().toString().trim();
         String tZipcode = zip.getText().toString().trim();
         String tExpertise = specialization.getText().toString().trim();
-        if (!TextUtils.isEmpty(tName)&& !TextUtils.isEmpty(tMobile)&& !TextUtils.isEmpty(tZipcode)&& !TextUtils.isEmpty(tExpertise)) {
-            Intent intent = getIntent();
+        if(TextUtils.isEmpty(tName)&& TextUtils.isEmpty(tMobile)&& TextUtils.isEmpty(tZipcode)&& TextUtils.isEmpty(tExpertise)) {
+            Toast.makeText(this,"Please enter details",Toast.LENGTH_LONG).show();
+        }
+        else if(tName.isEmpty()){
+            name.setError("Name should not be blank");
+        }
+        else if(tName.length()>30){
+            name.setError("Name should not exceed 30 characters");
+        }
+         else if(tMobile.isEmpty()){
+            contact.setError("Mobile number should not be blank");
+        }
+        else if(tMobile.length()!=10){
+            contact.setError("Enter a valid Mobile number");
+        }
+        else if(tZipcode.isEmpty()){
+            zip.setError("Zipcode cannot be blank");
+        }
+        else if(tZipcode.length()!=5){
+            zip.setError("Enter a valid Zipcode ");
+        }
+         else if(tExpertise.isEmpty()){
+            specialization.setError("specialization cannot be blank");
+        }
+       // if (!TextUtils.isEmpty(tName)&& !TextUtils.isEmpty(tMobile)&& !TextUtils.isEmpty(tZipcode)&& !TextUtils.isEmpty(tExpertise)) {
+           else{ Intent intent = getIntent();
             String id= intent.getStringExtra("user_id");
             tEmail= intent.getStringExtra("user_email");
             TechnicianDetails td = new TechnicianDetails( tEmail,tName,tMobile,tZipcode,tExpertise);
             dbr.child(id).setValue(td);
             Toast.makeText(this,"Technician is added",Toast.LENGTH_LONG).show();
-        } else{
+        } /*else{
             Toast.makeText(this,"Please enter details",Toast.LENGTH_LONG).show();
-        }
+        }*/
 
     }
     }

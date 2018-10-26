@@ -319,17 +319,19 @@ public class TechnicianMapActivity extends FragmentActivity implements OnMapRead
     protected void onStop() {
         super.onStop();
         //Update Address to GeoFire
+        if (FirebaseAuth.getInstance().getCurrentUser() != null){
+            String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("TechnicianAvailable");
 
-        String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("TechnicianAvailable");
+            GeoFire geoFire = new GeoFire(ref);
+            geoFire.removeLocation(userID, new GeoFire.CompletionListener(){
+                @Override
+                public void onComplete(String key, DatabaseError error) {
+                    //Do some stuff if you want to
+                }
+            });
+        }
 
-        GeoFire geoFire = new GeoFire(ref);
-        geoFire.removeLocation(userID, new GeoFire.CompletionListener(){
-            @Override
-            public void onComplete(String key, DatabaseError error) {
-                //Do some stuff if you want to
-            }
-        });
     }
 }
 

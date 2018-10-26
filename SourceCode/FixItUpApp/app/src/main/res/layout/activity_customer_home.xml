@@ -6,11 +6,16 @@
     android:layout_height="match_parent"
     tools:context=".CustomerHome">
 
-   <ListView
+    <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="40dp"
         android:id="@+id/listView">
 
+        <Button
+            android:id="@+id/mapButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Go to Map"></Button>
     </ListView>
 </android.support.constraint.ConstraintLayout>

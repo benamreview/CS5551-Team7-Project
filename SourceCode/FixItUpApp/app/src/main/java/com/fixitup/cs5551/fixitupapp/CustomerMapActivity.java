@@ -87,7 +87,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                 mLastKnownLocation=locationResult.getLastLocation();
                 mMap.animateCamera(CameraUpdateFactory.newLatLng(new LatLng(mLastKnownLocation.getLatitude(),
                         mLastKnownLocation.getLongitude() )));
-                /*if (currentLocationMarker != null) {
+                if (currentLocationMarker != null) {
                     currentLocationMarker.remove();
                     currentLocationMarker = mMap.addMarker(new MarkerOptions().position(new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()))
                             .title("Current Location"));

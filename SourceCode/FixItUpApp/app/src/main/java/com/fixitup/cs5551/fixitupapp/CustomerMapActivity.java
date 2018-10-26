@@ -120,6 +120,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                 FirebaseAuth.getInstance().signOut();
                 Intent intent = new Intent(CustomerMapActivity.this, MainActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
         mRequest = (Button) findViewById(R.id.request);

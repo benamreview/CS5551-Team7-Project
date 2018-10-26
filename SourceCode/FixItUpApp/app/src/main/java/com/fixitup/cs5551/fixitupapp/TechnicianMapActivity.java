@@ -319,7 +319,6 @@ public class TechnicianMapActivity extends FragmentActivity implements OnMapRead
     protected void onStop() {
         super.onStop();
         //Update Address to GeoFire
-        if (FirebaseAuth.getInstance().getCurrentUser() != null){
             String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
             DatabaseReference ref = FirebaseDatabase.getInstance().getReference("TechnicianAvailable");
 
@@ -330,7 +329,6 @@ public class TechnicianMapActivity extends FragmentActivity implements OnMapRead
                     //Do some stuff if you want to
                 }
             });
-        }
 
     }
 }

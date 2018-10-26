@@ -4,31 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    >
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:text="TextView"
+        android:textSize="20sp"
+        android:id="@+id/technician"
+        />
 
-    android:orientation="vertical">
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:text="TextView"
-        android:id="@+id/textname"
-        />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:text="TextView"
-        android:id="@+id/textcontact"
-        />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:text="TextView"
-        android:id="@+id/textzipcode"
-        />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:text="TextView"
-        android:id="@+id/texttype"
-        />
 
 </LinearLayout>

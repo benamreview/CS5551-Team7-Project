@@ -5,11 +5,13 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.stats.internal.G;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -61,24 +63,38 @@ public class CustomerLoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 final String email = mEmail.getText().toString();
                 final String password = mPassword.getText().toString();
-                mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(CustomerLoginActivity.this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        //If user has already signed up
-                        if (!task.isSuccessful()){
-                            Log.e(TAG, "onComplete: Failed=" + task.getException().getMessage());
-                            Toast.makeText(CustomerLoginActivity.this, "Registration Failed!", Toast.LENGTH_SHORT).show();
+                if(email.isEmpty()){
+                    mEmail.setError("Email Address cannot be blank");
+                }
+                else if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+                       mEmail.setError("Enter a Valid Email");
+                }
+                else if(password.isEmpty()){
+                    mPassword.setError("Password cannot be blank");
+                }
+                 else if(password.length()<6 && password.length()>12){
+                    mPassword.setError("Password should be of minimum 6 characters and maximum 12 characters");
+                }
+
+                    mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(CustomerLoginActivity.this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            //If user has already signed up
+                            if (!task.isSuccessful()) {
+                                Log.e(TAG, "onComplete: Failed=" + task.getException().getMessage());
+                                Toast.makeText(CustomerLoginActivity.this, "Registration Failed!", Toast.LENGTH_SHORT).show();
+                            }
+                            //If not, reference the database and add variables to it.
+                            else {
+                                String user_id = mAuth.getCurrentUser().getUid(); //id assigned to Technician at moment of sign-up
+                                //this database reference is pointing to the customers INSTEAD of the technicians
+                                DatabaseReference current_user_db = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child(user_id);
+                                current_user_db.setValue(true);
+                            }
                         }
-                        //If not, reference the database and add variables to it.
-                        else {
-                            String user_id = mAuth.getCurrentUser().getUid(); //id assigned to Technician at moment of sign-up
-                            //this database reference is pointing to the customers INSTEAD of the technicians
-                            DatabaseReference current_user_db = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child(user_id);
-                            current_user_db.setValue(true);
-                        }
-                    }
-                });
-            }
+                    });
+                }
+
         });
         mLogin.setOnClickListener(new View.OnClickListener() {
             @Override

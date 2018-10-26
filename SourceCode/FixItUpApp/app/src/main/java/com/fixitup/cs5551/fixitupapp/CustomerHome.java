@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -18,36 +19,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CustomerHome extends AppCompatActivity {
-   // Button btn;
-    ListView list;
+    ListView lv;
+
     DatabaseReference dbr;
-    List<TechnicianDetails> technicianDetailsList;
+       TechnicianDetails td;
+       ArrayList<String> list;
+       ArrayAdapter<String> ad;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_customer_home);
         dbr = FirebaseDatabase.getInstance().getReference().child("Users").child("Technicians");
-       // btn = (Button)findViewById(R.id.display);
-        list =(ListView)findViewById(R.id.listViewTechnicians);
-        technicianDetailsList = new ArrayList<>();
-        /*btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });*/
+        lv = (ListView)findViewById(R.id.listView);
+        td = new TechnicianDetails();
+        list = new ArrayList<>();
+        ad = new ArrayAdapter<String>(this, R.layout.list_layout, R.id.technician, list);
         dbr.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot technicianSnapshot: dataSnapshot.getChildren()){
-
-                    TechnicianDetails td= technicianSnapshot.getValue(TechnicianDetails.class);
-                    technicianDetailsList.add(td);
+                for(DataSnapshot ds: dataSnapshot.getChildren()){
+                    td = ds.getValue(TechnicianDetails.class);
+                    list.add(td.getName().toString()+"\n"+td.getEmail().toString()+"\n"+td.getContact().toString()+"\n "+td.getType().toString()+"\n"+td.getZipcode().toString());
                 }
-               /* Log.e("Techinician", dataSnapshot.getChildren().toString()
-                        );*/
-                TechnicianList adapter = new TechnicianList(CustomerHome.this, technicianDetailsList);
-                list.setAdapter(adapter);
+                lv.setAdapter(ad);
             }
 
             @Override
@@ -55,28 +49,8 @@ public class CustomerHome extends AppCompatActivity {
 
             }
         });
+
     }
 
 
-    }/*
-    @Override
-    protected void onStart(){
-        super.onStart();
-        dbr.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                technicianDetailsList.clear();
-                for(DataSnapshot technicianSnapshot: dataSnapshot.getChildren()){
-                    TechnicianDetails td= technicianSnapshot.getValue(TechnicianDetails.class);
-                    technicianDetailsList.add(td);
-                }
-                TechnicianList adapter = new TechnicianList(CustomerHome.this, technicianDetailsList);
-                list.setAdapter(adapter);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }*/
+    }

@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 public class MainActivity extends AppCompatActivity {
     private Button mTechnician, mCustomer;
@@ -12,8 +13,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mTechnician = (Button) findViewById(R.id.technician);
-        mCustomer = (Button) findViewById(R.id.customer);
+        ImageButton mTechnician;
+        ImageButton mCustomer;
+        mTechnician = (ImageButton) findViewById(R.id.technician);
+        mCustomer = (ImageButton) findViewById(R.id.customer);
 
 
         //Set behaviors for Customer and Technician buttons to redirect to its proper corresponding activity.

@@ -15,6 +15,7 @@ public class MainActivity extends AppCompatActivity {
         mTechnician = (Button) findViewById(R.id.technician);
         mCustomer = (Button) findViewById(R.id.customer);
 
+
         //Set behaviors for Customer and Technician buttons to redirect to its proper corresponding activity.
         mCustomer.setOnClickListener(new View.OnClickListener(){
 

@@ -6,7 +6,7 @@ public class TechnicianDetails {
     String contact;
     String zipcode;
     String type;
-    public TechnicianDetails(){
+      public TechnicianDetails(){
           email = "";
           name = "";
           contact = "";

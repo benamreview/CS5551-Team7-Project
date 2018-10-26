@@ -37,7 +37,7 @@ public class TechnicianLoginActivity extends AppCompatActivity {
                 if (user != null){
                     //if not null, move to another activity, to be created later.
                     //Remember the current context!
-                    Intent intent = new Intent(TechnicianLoginActivity.this, TechnicianMapActivity.class);
+                    Intent intent = new Intent(TechnicianLoginActivity.this, TechnicianRegisterActivity.class);
                     intent.putExtra("user_id", user.getUid());
                     intent.putExtra("user_email", user.getEmail());
                     startActivity(intent);
@@ -100,14 +100,24 @@ public class TechnicianLoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 final String email = mEmail.getText().toString();
                 final String password = mPassword.getText().toString();
-                mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(TechnicianLoginActivity.this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (!task.isSuccessful()){
-                            Toast.makeText(TechnicianLoginActivity.this, "Authentication Failed!", Toast.LENGTH_SHORT).show();
+                if(email.isEmpty() ){
+                    mEmail.setError("Email Address cannot be blank");
+                }
+                else if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+                    mEmail.setError("Enter a Valid Email");
+                }
+                else if(password.isEmpty()){
+                    mPassword.setError("Password cannot be blank");
+                }else {
+                    mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(TechnicianLoginActivity.this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (!task.isSuccessful()) {
+                                Toast.makeText(TechnicianLoginActivity.this, "Authentication Failed!", Toast.LENGTH_SHORT).show();
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }
         });
     }

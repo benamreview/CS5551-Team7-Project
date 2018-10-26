@@ -5,8 +5,8 @@ public class CustomerDetails {
     String name;
     String contact;
     String Zipcode;
-
-    public CustomerDetails(String name, String contact, String zipcode) {
+    String email;
+    public CustomerDetails(String email,String name, String contact, String zipcode) {
         this.name = name;
         this.contact = contact;
         Zipcode = zipcode;

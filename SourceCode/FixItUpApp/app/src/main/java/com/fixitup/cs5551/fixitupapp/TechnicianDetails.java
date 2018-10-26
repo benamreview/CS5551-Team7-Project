@@ -7,7 +7,11 @@ public class TechnicianDetails {
     String zipcode;
     String type;
       public TechnicianDetails(){
-
+          email = "";
+          name = "";
+          contact = "";
+          zipcode = "";
+          type = "";
       }
     public TechnicianDetails(String Email, String Name, String Contact, String Zipcode, String Type) {
         email = Email;

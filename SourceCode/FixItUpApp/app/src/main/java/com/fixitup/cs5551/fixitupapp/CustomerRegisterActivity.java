@@ -48,7 +48,7 @@ public class CustomerRegisterActivity extends AppCompatActivity {
             dbr.child(id).setValue(cd);
             Toast.makeText(this,"Customer is added",Toast.LENGTH_LONG).show();
         } else{
-            Toast.makeText(this,"please enter details",Toast.LENGTH_LONG).show();
+            Toast.makeText(this,"Please enter details",Toast.LENGTH_LONG).show();
         }
 
     }

@@ -144,7 +144,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
         });
 
         //Search for closest technician
-        getClosestTechnician();
+        //getClosestTechnician();
     }
     //Radius is 1km
     private int radius = 1;

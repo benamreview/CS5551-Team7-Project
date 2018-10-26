@@ -81,8 +81,8 @@ public class TechnicianMapActivity extends FragmentActivity implements OnMapRead
     private static final String TRACKING_LOCATION_KEY = "tracking_location";
     private LocationRequest getLocationRequest() {
         LocationRequest locationRequest = new LocationRequest();
-        locationRequest.setInterval(10000);
-        locationRequest.setFastestInterval(7000);
+        locationRequest.setInterval(4000);
+        locationRequest.setFastestInterval(2000);
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         return locationRequest;
     }

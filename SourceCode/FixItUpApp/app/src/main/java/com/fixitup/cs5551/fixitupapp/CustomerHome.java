@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -21,7 +22,7 @@ import java.util.List;
 
 public class CustomerHome extends AppCompatActivity {
     ListView lv;
-    private Button mMapBtn;
+    private Button mMapBtn, mLogout;
     DatabaseReference dbr;
        TechnicianDetails td;
        ArrayList<String> list;
@@ -62,6 +63,16 @@ public class CustomerHome extends AppCompatActivity {
                 startActivity(intent);
                 finish();
                 return;
+            }
+        });
+        mLogout = (Button) findViewById(R.id.logout);
+        mLogout.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(CustomerHome.this, MainActivity.class);
+                startActivity(intent);
             }
         });
     }

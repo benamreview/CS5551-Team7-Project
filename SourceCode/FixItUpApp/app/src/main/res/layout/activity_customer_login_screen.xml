@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".TechnicianLoginScreenActivity">
+    tools:context=".CustomerLoginScreenActivity">
 
     <Button
         android:id="@+id/signInBtn"
@@ -31,8 +31,8 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="42dp"
-        android:text="Welcome to our FixitUp's Technician Team! \nPlease sign in or create a new account!"
+        android:text="Welcome to our FixitUp's Customer Base! \nPlease sign in or create a new account!"
         android:textSize="17dp"
         android:visibility="visible"
-        tools:text="Welcome to our FixitUp's Technician Team! \nPlease sign in or create a new account!" />
+        tools:text="Welcome to our FixitUp's Customer Base! \nPlease sign in or create a new account!" />
 </RelativeLayout>

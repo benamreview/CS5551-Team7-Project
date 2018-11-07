@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".TechnicianLoginActivity"
+    tools:context=".TechnicianSignUpActivity"
     android:orientation="vertical"
     android:paddingLeft="18dp"
     android:paddingRight="18dp"
@@ -19,19 +19,19 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint = "Enter your email"
-        android:id = "@+id/email"
-        android:inputType="textEmailAddress"
-        android:ems="10"
-        android:drawablePadding="12dp"
-        android:padding="8dp"
-        android:textColorHint="#fff"
-        android:maxLines="1"
-        android:background="@android:color/transparent"
-        android:layout_marginTop="70dp"/>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint = "Enter your email"
+                android:id = "@+id/email"
+                android:inputType="textEmailAddress"
+                android:ems="10"
+                android:drawablePadding="12dp"
+                android:padding="8dp"
+                android:textColorHint="#fff"
+                android:maxLines="1"
+                android:background="@android:color/transparent"
+                android:layout_marginTop="70dp"/>
 
             <View
                 android:layout_width="match_parent"
@@ -55,19 +55,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="#f9d7db" />
+
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text = "Login"
-                android:id = "@+id/login"
-                android:background="@drawable/background_login"
+                android:text = "Registration"
+                android:id = "@+id/registration"
+                android:background="@drawable/background_signup"
+                style="@style/Base.TextAppearance.AppCompat.Body1"
                 android:textColor="#f16f7d"
                 android:textAllCaps="false"
-                android:padding="16dp"
+                android:textSize="18sp"
+                android:layout_marginTop="16dp"
                 android:clickable="true"
-                style="@style/Base.TextAppearance.AppCompat.Body1"
-                android:layout_marginTop="24dp"
-                android:textSize="18sp"/>
+                android:padding="16dp"/>
         </LinearLayout>
     </ScrollView>
 

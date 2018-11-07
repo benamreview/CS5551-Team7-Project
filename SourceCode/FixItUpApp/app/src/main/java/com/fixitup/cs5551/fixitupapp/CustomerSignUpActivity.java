@@ -18,15 +18,16 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-public class CustomerLoginActivity extends AppCompatActivity {
+public class CustomerSignUpActivity extends AppCompatActivity {
     private EditText mEmail, mPassword;
-    private Button mLogin;
+    private Button mRegistration;
+    String user_id;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_technician_login);
+        setContentView(R.layout.activity_technician_sign_up);
 
         mAuth = FirebaseAuth.getInstance();
         firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
@@ -36,7 +37,7 @@ public class CustomerLoginActivity extends AppCompatActivity {
                 if (user != null){
                     //if not null, move to another activity, to be created later.
                     //Remember the current context!
-                    Intent intent = new Intent(CustomerLoginActivity.this, CustomerHome.class);
+                    Intent intent = new Intent(CustomerSignUpActivity.this, CustomerRegisterActivity.class);
                     intent.putExtra("user_id", user.getUid());
                     intent.putExtra("user_email", user.getEmail());
                     startActivity(intent);
@@ -49,15 +50,17 @@ public class CustomerLoginActivity extends AppCompatActivity {
         //Initialize variables from xml UI layout.
         mEmail = (EditText) findViewById(R.id.email);
         mPassword = (EditText) findViewById(R.id.password);
-        mLogin = (Button) findViewById(R.id.login);
+        mRegistration = (Button) findViewById(R.id.registration);
         final String email = mEmail.getText().toString();
         final String password = mPassword.getText().toString();
-        mLogin.setOnClickListener(new View.OnClickListener() {
+
+        mRegistration.setOnClickListener(new View.OnClickListener(){
+
             @Override
             public void onClick(View v) {
                 final String email = mEmail.getText().toString();
                 final String password = mPassword.getText().toString();
-                if(email.isEmpty() ){
+                if(email.isEmpty()){
                     mEmail.setError("Email Address cannot be blank");
                 }
                 else if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
@@ -65,12 +68,26 @@ public class CustomerLoginActivity extends AppCompatActivity {
                 }
                 else if(password.isEmpty()){
                     mPassword.setError("Password cannot be blank");
-                }else {
-                    mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(CustomerLoginActivity.this, new OnCompleteListener<AuthResult>() {
+                }
+                else if(password.length()<6 && password.length()>12){
+                    mPassword.setError("Password should be of minimum 6 characters and maximum 12 characters");
+                }
+                else {
+                    mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(CustomerSignUpActivity.this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
+                            //If user has already signed up, therefore the createUserWithEmailandPassword would fail.
                             if (!task.isSuccessful()) {
-                                Toast.makeText(CustomerLoginActivity.this, "Authentication Failed!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(CustomerSignUpActivity.this, "Registration Failed!", Toast.LENGTH_SHORT).show();
+                            }
+                            //If the user email cannot be found in the database, reference the database and add variables to it.
+                            else {
+                                user_id = mAuth.getCurrentUser().getUid(); //id assigned to Technician at moment of sign-up
+                                //this database reference is pointing to the technicians
+                                DatabaseReference current_user_db = FirebaseDatabase.getInstance().getReference().child("Users").child("Technicians").child(user_id);
+                                current_user_db.setValue(true);
+                                current_user_db = FirebaseDatabase.getInstance().getReference().child("Users").child("Technicians").child(user_id).child("email");
+                                current_user_db.setValue(email);
                             }
                         }
                     });

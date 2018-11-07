@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-public class TechnicianLoginScreenActivity extends AppCompatActivity {
+public class CustomerLoginScreenActivity extends AppCompatActivity {
     Button signinBtn;
     Button signupBtn;
     @Override
@@ -18,16 +18,16 @@ public class TechnicianLoginScreenActivity extends AppCompatActivity {
         signupBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(TechnicianLoginScreenActivity.this, TechnicianSignUpActivity.class);
+                Intent intent = new Intent(CustomerLoginScreenActivity.this, CustomerSignUpActivity.class);
                 startActivity(intent);
                 finish();
                 return;
-                }
+            }
         });
         signinBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(TechnicianLoginScreenActivity.this, TechnicianLoginActivity.class);
+                Intent intent = new Intent(CustomerLoginScreenActivity.this, CustomerLoginActivity.class);
                 startActivity(intent);
                 finish();
                 return;

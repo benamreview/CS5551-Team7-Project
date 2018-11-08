@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 public class TechnicianLoginScreenActivity extends AppCompatActivity {
     Button signinBtn;
     Button signupBtn;
@@ -18,6 +20,9 @@ public class TechnicianLoginScreenActivity extends AppCompatActivity {
         signupBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (FirebaseAuth.getInstance()!=null){
+                    FirebaseAuth.getInstance().signOut();
+                }
                 Intent intent = new Intent(TechnicianLoginScreenActivity.this, TechnicianSignUpActivity.class);
                 startActivity(intent);
                 finish();

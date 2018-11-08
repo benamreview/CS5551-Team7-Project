@@ -62,6 +62,7 @@ UMKC: 39.035790, -94.577890
 public class TechnicianMapActivity extends FragmentActivity implements OnMapReadyCallback, FetchAddressTask.OnTaskCompleted {
     private GoogleMap mMap;
     private Button mLogout;
+    private boolean LoggedOut;
     FusedLocationProviderClient mFusedLocationProviderClient;
     private static final String TAG = TechnicianMapActivity.class.getSimpleName();
     boolean mLocationPermissionGranted;
@@ -81,8 +82,8 @@ public class TechnicianMapActivity extends FragmentActivity implements OnMapRead
     private static final String TRACKING_LOCATION_KEY = "tracking_location";
     private LocationRequest getLocationRequest() {
         LocationRequest locationRequest = new LocationRequest();
-        locationRequest.setInterval(4000);
-        locationRequest.setFastestInterval(2000);
+        locationRequest.setInterval(2000);
+        locationRequest.setFastestInterval(1200);
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         return locationRequest;
     }
@@ -129,13 +130,25 @@ public class TechnicianMapActivity extends FragmentActivity implements OnMapRead
 
             }
         };
-        //Create Logout Button
+        //Create Logout button and its behavior
         mLogout = (Button) findViewById(R.id.logout);
+        LoggedOut = false;
         mLogout.setOnClickListener(new View.OnClickListener(){
 
             @Override
             public void onClick(View v) {
+                //Delete location from current
+                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("TechnicianAvailable");
+                String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                GeoFire geoFire = new GeoFire(ref);
+                geoFire.removeLocation(userID, new GeoFire.CompletionListener(){
+                    @Override
+                    public void onComplete(String key, DatabaseError error) {
+                        //Do some stuff if you want to
+                    }
+                });
                FirebaseAuth.getInstance().signOut();
+               LoggedOut=true;
                 Intent intent = new Intent(TechnicianMapActivity.this, MainActivity.class);
                 startActivity(intent);
             }
@@ -271,9 +284,9 @@ public class TechnicianMapActivity extends FragmentActivity implements OnMapRead
                                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                         new LatLng(mLastKnownLocation.getLatitude(),
                                                 mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
-                                mMap.addMarker(new MarkerOptions().position(new LatLng(mLastKnownLocation.getLatitude(),mLastKnownLocation.getLongitude() ))
-                                        .title("Current Location"))
-                                        .setSnippet("Latitude: " + mLastKnownLocation.getLatitude() + ", Longitude:" + mLastKnownLocation.getLongitude());
+                                currentLocationMarker=mMap.addMarker(new MarkerOptions().position(new LatLng(mLastKnownLocation.getLatitude(),mLastKnownLocation.getLongitude() ))
+                                        .title("Current Location"));
+                                currentLocationMarker.setSnippet("Latitude: " + mLastKnownLocation.getLatitude() + ", Longitude:" + mLastKnownLocation.getLongitude());
                                 mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(mLastKnownLocation.getLatitude(),
                                         mLastKnownLocation.getLongitude() )));
 
@@ -319,16 +332,20 @@ public class TechnicianMapActivity extends FragmentActivity implements OnMapRead
     protected void onStop() {
         super.onStop();
         //Update Address to GeoFire
+        if (LoggedOut == false){
             String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("TechnicianAvailable");
+                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("TechnicianAvailable");
 
-            GeoFire geoFire = new GeoFire(ref);
-            geoFire.removeLocation(userID, new GeoFire.CompletionListener(){
-                @Override
-                public void onComplete(String key, DatabaseError error) {
-                    //Do some stuff if you want to
-                }
-            });
+                GeoFire geoFire = new GeoFire(ref);
+                geoFire.removeLocation(userID, new GeoFire.CompletionListener(){
+                    @Override
+                    public void onComplete(String key, DatabaseError error) {
+                        //Do some stuff if you want to
+                    }
+                });
+        }
+
+
 
     }
 }

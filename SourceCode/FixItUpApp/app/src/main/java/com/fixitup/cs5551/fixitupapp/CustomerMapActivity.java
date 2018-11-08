@@ -142,13 +142,14 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                 mMap.addMarker(new MarkerOptions().position(repairLocation)
                         .title("Repair Location"));
                 mRequest.setText("Sending request to Technicians...");
+                //Search for closest technician
+                getClosestTechnician();
             }
         });
 
-        //Search for closest technician
-        //getClosestTechnician();
+
     }
-    //Radius is 1km
+    //Radius is 1 km
     private int radius = 1;
     private Boolean technicianFound = false;
     private String foundTechnicianID;
@@ -160,7 +161,12 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
         geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override
             public void onKeyEntered(String key, GeoLocation location) {
-                technicianFound = true;
+                if (!technicianFound){
+                    technicianFound = true;
+                    foundTechnicianID = key;
+                }
+
+
             }
 
             @Override

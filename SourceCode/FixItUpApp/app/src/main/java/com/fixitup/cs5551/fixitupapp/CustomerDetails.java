@@ -4,14 +4,16 @@ public class CustomerDetails {
 
     String name;
     String contact;
-    String Zipcode;
+    String zipcode;
     String email;
-    public CustomerDetails(String email,String name, String contact, String zipcode) {
-        this.name = name;
-        this.contact = contact;
-        Zipcode = zipcode;
+    public CustomerDetails(String Email,String Name, String Contact, String Zipcode) {
+        name = Name;
+        email = Email;
+        contact = Contact;
+        zipcode = Zipcode;
 
     }
+    public String getEmail(){ return email;}
 
     public String getName() {
         return name;
@@ -22,7 +24,7 @@ public class CustomerDetails {
     }
 
     public String getZipcode() {
-        return Zipcode;
+        return zipcode;
     }
 
 }

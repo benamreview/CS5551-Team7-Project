@@ -65,6 +65,9 @@ public class CustomerRegisterActivity extends AppCompatActivity {
             CustomerDetails cd = new CustomerDetails(cEmail, cName, cMobile, cZipcode);
             dbr.child(id).setValue(cd);
             Toast.makeText(this,"Customer is added",Toast.LENGTH_LONG).show();
+            intent = new Intent (CustomerRegisterActivity.this, CustomerHome.class);
+            startActivity(intent);
+            finish();
         }
 
     }

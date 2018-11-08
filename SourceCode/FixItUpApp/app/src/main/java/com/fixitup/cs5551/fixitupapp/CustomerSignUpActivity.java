@@ -27,7 +27,7 @@ public class CustomerSignUpActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_technician_sign_up);
+        setContentView(R.layout.activity_customer_sign_up);
 
         mAuth = FirebaseAuth.getInstance();
         firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
@@ -84,9 +84,9 @@ public class CustomerSignUpActivity extends AppCompatActivity {
                             else {
                                 user_id = mAuth.getCurrentUser().getUid(); //id assigned to Technician at moment of sign-up
                                 //this database reference is pointing to the technicians
-                                DatabaseReference current_user_db = FirebaseDatabase.getInstance().getReference().child("Users").child("Technicians").child(user_id);
+                                DatabaseReference current_user_db = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child(user_id);
                                 current_user_db.setValue(true);
-                                current_user_db = FirebaseDatabase.getInstance().getReference().child("Users").child("Technicians").child(user_id).child("email");
+                                current_user_db = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child(user_id).child("email");
                                 current_user_db.setValue(email);
                             }
                         }

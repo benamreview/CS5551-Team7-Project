@@ -33,13 +33,19 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.HashMap;
+import java.util.List;
 
 public class CustomerMapActivity extends FragmentActivity implements OnMapReadyCallback, FetchAddressTask.OnTaskCompleted {
     private GoogleMap mMap;
     private Button mLogout, mRequest;
+    private boolean LoggedOut;
     private LatLng repairLocation;
     FusedLocationProviderClient mFusedLocationProviderClient;
     private static final String TAG = TechnicianMapActivity.class.getSimpleName();
@@ -112,11 +118,23 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
             }
         };
         //Create Logout Button
+        LoggedOut = false;
         mLogout = (Button) findViewById(R.id.logout);
         mLogout.setOnClickListener(new View.OnClickListener(){
 
             @Override
             public void onClick(View v) {
+                LoggedOut = true;
+                String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("customerRequest");
+
+                GeoFire geoFire = new GeoFire(ref);
+                geoFire.removeLocation(userID, new GeoFire.CompletionListener(){
+                    @Override
+                    public void onComplete(String key, DatabaseError error) {
+                        //Do some stuff if you want to
+                    }
+                });
                 FirebaseAuth.getInstance().signOut();
                 Intent intent = new Intent(CustomerMapActivity.this, MainActivity.class);
                 startActivity(intent);
@@ -164,7 +182,18 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                 if (!technicianFound){
                     technicianFound = true;
                     foundTechnicianID = key;
+                    DatabaseReference technicianRef= FirebaseDatabase.getInstance().getReference().child("Users").child("Technicians").child(foundTechnicianID);
+                    String customerID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                    HashMap map = new HashMap();
+                    //Assign the repair ID to the particular customer that made the request
+                    map.put("requestCustomerID", customerID);
+                    technicianRef.updateChildren(map);
+
+                    //pass the technician's location to the customer
+                    getTechnicianLocation();
+                    mRequest.setText("A technician has been selected! Fetching location...");
                 }
+
 
 
             }
@@ -194,8 +223,64 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
             }
         });
     }
+    //This is used to display the technician's current location
+    Marker mTechnicianMarker;
+    private void getTechnicianLocation(){
+        DatabaseReference technicianRef= FirebaseDatabase.getInstance().getReference().child("TechnicianBusy").child(foundTechnicianID).child("l");
+        technicianRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()){
+                    List<Object> map = (List<Object>) dataSnapshot.getValue();
+                    double locationLat = 0;
+                    double locationLng = 0;
+                    if (map.get(0) != null){
+                        //Convert Longitude and Latitude from object list's string
+                        locationLat = Double.parseDouble(map.get(0).toString());
 
+                    }
+                    if (map.get(1) != null){
+                        //Convert Longitude and Latitude from object list's string
+                        locationLng = Double.parseDouble(map.get(1).toString());
 
+                    }
+                    LatLng technicianLatLng = new LatLng(locationLat, locationLng);
+                    if (mTechnicianMarker != null){
+                        mTechnicianMarker.remove();
+                    }
+                    //Add location to display distance
+                    Location loc1 = new Location("");
+                    loc1.setLatitude(repairLocation.latitude);
+                    loc1.setLongitude(repairLocation.longitude);
+
+                    Location loc2 = new Location("");
+                    loc2.setLatitude(technicianLatLng.latitude);
+                    loc2.setLongitude(technicianLatLng.longitude);
+                    //Notification that technician is nearby
+                    //Calculate distance
+                    float distance = loc1.distanceTo(loc2);
+                    if (distance < 200){
+                        mRequest.setText("Technician is nearby (within 200m)!Please be prepared!");
+                    }
+                    else if (distance <100){
+                        mRequest.setText("Technician is almost here (within 100m)! Please be prepared!");
+                    }
+                    else{
+                        mRequest.setText("Technician Found at Location (" + String.valueOf(distance) + " meters) from you");
+                    }
+                    ;
+                    //Add marker to map to show technician's current location
+                    mTechnicianMarker = mMap.addMarker(new MarkerOptions().position(technicianLatLng).title("Currently Selected Technician"));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
 
 
     /**
@@ -373,19 +458,21 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
     @Override
     protected void onStop() {
         super.onStop();
-        /* We don't need real time update of Customers
+        //We don't need real time update of Customers
         //Update Address to GeoFire
+        if (LoggedOut == false){
+            String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("customerRequest");
 
-        String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("TechnicianAvailable");
+            GeoFire geoFire = new GeoFire(ref);
+            geoFire.removeLocation(userID, new GeoFire.CompletionListener(){
+                @Override
+                public void onComplete(String key, DatabaseError error) {
+                    //Do some stuff if you want to
+                }
+            });
+        }
 
-        GeoFire geoFire = new GeoFire(ref);
-        geoFire.removeLocation(userID, new GeoFire.CompletionListener(){
-            @Override
-            public void onComplete(String key, DatabaseError error) {
-                //Do some stuff if you want to
-            }
-        });*/
     }
 }
 

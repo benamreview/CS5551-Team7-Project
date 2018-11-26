@@ -124,6 +124,7 @@ public class TechnicianMapActivity extends FragmentActivity implements OnMapRead
                     currentLocationMarker.remove();
                     currentLocationMarker = mMap.addMarker(new MarkerOptions().position(new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()))
                             .title("Current Location"));
+                    currentLocationMarker.setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.mappin_icon));
                     currentLocationMarker.setSnippet("Latitude: " + mLastKnownLocation.getLatitude() + ", Longitude:" + mLastKnownLocation.getLongitude());
                 }
 

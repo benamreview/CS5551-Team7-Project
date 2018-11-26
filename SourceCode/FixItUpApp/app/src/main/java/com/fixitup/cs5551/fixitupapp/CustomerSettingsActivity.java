@@ -1,0 +1,13 @@
+package com.fixitup.cs5551.fixitupapp;
+
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+
+public class CustomerSettingsActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_customer_settings);
+    }
+}

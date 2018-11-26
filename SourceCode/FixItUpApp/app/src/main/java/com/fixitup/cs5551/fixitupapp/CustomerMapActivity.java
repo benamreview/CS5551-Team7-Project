@@ -46,7 +46,7 @@ import java.util.List;
 public class CustomerMapActivity extends FragmentActivity implements OnMapReadyCallback, FetchAddressTask.OnTaskCompleted {
     private GoogleMap mMap;
 
-    private Button mLogout, mRequest, mCancel;
+    private Button mLogout, mRequest, mCancel, mSettings;
     private Boolean requestInitiated = false;
 
     private boolean LoggedOut;
@@ -87,6 +87,11 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        //Initialize All Buttons
+        mLogout = (Button) findViewById(R.id.logout);
+        mRequest = (Button) findViewById(R.id.request);
+        mCancel = (Button) findViewById(R.id.cancel);
+        mSettings = (Button) findViewById(R.id.settings);
 
         // Construct a FusedLocationProviderClient.
         // The LocationServices interface is responsible for returning the current location of the device
@@ -105,13 +110,14 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                     currentLocationMarker.remove();
                     currentLocationMarker = mMap.addMarker(new MarkerOptions().position(new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()))
                             .title("Current Location"));
+                    currentLocationMarker.setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.mappin_icon));
                     currentLocationMarker.setSnippet("Latitude: " + mLastKnownLocation.getLatitude() + ", Longitude:" + mLastKnownLocation.getLongitude());
                 }
             }
         };
         //Create Logout Button
         LoggedOut = false;
-        mLogout = (Button) findViewById(R.id.logout);
+
         mLogout.setOnClickListener(new View.OnClickListener(){
 
             @Override
@@ -133,7 +139,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                 finish();
             }
         });
-        mRequest = (Button) findViewById(R.id.request);
+
         mRequest.setOnClickListener(new View.OnClickListener(){
 
             @Override
@@ -161,7 +167,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                 }
             }
         });
-        mCancel = (Button) findViewById(R.id.cancel);
+
         mCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -197,6 +203,14 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
 
                 mRequest.setText("Request a Technician");
                 mCancel.setVisibility(View.INVISIBLE);
+            }
+        });
+        mSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(CustomerMapActivity.this, CustomerHome.class);
+                startActivity(intent);
+                finish();
             }
         });
     }
@@ -453,6 +467,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                                 currentLocationMarker= mMap.addMarker(new MarkerOptions().position(new LatLng(mLastKnownLocation.getLatitude(),mLastKnownLocation.getLongitude() ))
                                         .title("Current Location"));
                                 currentLocationMarker.setSnippet("Latitude: " + mLastKnownLocation.getLatitude() + ", Longitude:" + mLastKnownLocation.getLongitude());
+                                currentLocationMarker.setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.mappin_icon));
                                 mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(mLastKnownLocation.getLatitude(),
                                         mLastKnownLocation.getLongitude() )));
 

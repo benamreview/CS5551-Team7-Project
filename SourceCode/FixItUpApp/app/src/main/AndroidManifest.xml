@@ -54,7 +54,8 @@
         <activity android:name=".TechnicianLoginScreenActivity" />
         <activity android:name=".TechnicianSignUpActivity" />
         <activity android:name=".CustomerLoginScreenActivity" />
-        <activity android:name=".CustomerSignUpActivity"></activity>
+        <activity android:name=".CustomerSignUpActivity" />
+        <activity android:name=".CustomerSettingsActivity"></activity>
     </application>
 
 </manifest>

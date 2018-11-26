@@ -34,6 +34,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -65,8 +66,11 @@ UMKC: 39.035790, -94.577890
 //more frequently (make it more continuous and in-motion, not statically working whenever a function is called)
 public class TechnicianMapActivity extends FragmentActivity implements OnMapReadyCallback, FetchAddressTask.OnTaskCompleted {
     private GoogleMap mMap;
+
     private Button mLogout;
     private boolean LoggedOut;
+
+    private Marker repairMarker;
     FusedLocationProviderClient mFusedLocationProviderClient;
     private static final String TAG = TechnicianMapActivity.class.getSimpleName();
     boolean mLocationPermissionGranted;
@@ -75,8 +79,6 @@ public class TechnicianMapActivity extends FragmentActivity implements OnMapRead
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private Location mLastKnownLocation;
     private LocationCallback mLocationCallback;
-    GoogleApiClient mGoogleApiClient;
-    Location mLastLocation;
     //In order for LocationRequest to work, we need to install the latest version of Google Play Service (dependencies tab in Project Structure)
     LocationRequest mLocationRequest;
     private Marker currentLocationMarker;
@@ -209,13 +211,25 @@ public class TechnicianMapActivity extends FragmentActivity implements OnMapRead
     }
     private void getAssignedCustomer(){
         String technicianID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        DatabaseReference assignedCustomerRef= FirebaseDatabase.getInstance().getReference().child("Users").child("Technicians").child(technicianID).child("requestCustomerID");
+        final DatabaseReference assignedCustomerRef= FirebaseDatabase.getInstance().getReference().child("Users").child("Technicians").child(technicianID).child("requestCustomerID");
         assignedCustomerRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                //If a customer id is found
                 if (dataSnapshot.exists()){
                     customerID = dataSnapshot.getValue().toString();
                     getRepairLocation();
+                }
+                //if the customer cancels the request
+                else {
+                    customerID = "";
+                    if (repairMarker!=null){
+                        repairMarker.remove();
+                    }
+                    if (repairLocationRef != null){
+                        repairLocationRef.removeEventListener(repairLocationRefListener);
+                    }
+
                 }
             }
 
@@ -227,12 +241,16 @@ public class TechnicianMapActivity extends FragmentActivity implements OnMapRead
 
 
     }
+    private DatabaseReference repairLocationRef;
+    private ValueEventListener repairLocationRefListener;
+    //Assign local variables global so that these can be canceled later
     private void getRepairLocation(){
-        DatabaseReference repairLocationRef= FirebaseDatabase.getInstance().getReference().child("customerRequest").child(customerID).child("l");
-        repairLocationRef.addValueEventListener(new ValueEventListener() {
+        repairLocationRef= FirebaseDatabase.getInstance().getReference().child("customerRequest").child(customerID).child("l");
+        repairLocationRefListener = repairLocationRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()){
+                //Check for validity of condition
+                if (dataSnapshot.exists() && !customerID.equals("")){
                     List<Object> map = (List<Object>) dataSnapshot.getValue();
                     double locationLat = 0;
                     double locationLng = 0;
@@ -248,7 +266,9 @@ public class TechnicianMapActivity extends FragmentActivity implements OnMapRead
                     }
                     LatLng technicianLatLng = new LatLng(locationLat, locationLng);
                     //To do: Should assign it to a marker variable
-                    mMap.addMarker(new MarkerOptions().position(technicianLatLng).title("Repair Location"));
+                    repairMarker = mMap.addMarker(new MarkerOptions().position(technicianLatLng)
+                            .title("Repair Location"));
+                    repairMarker.setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.repair_icon));
                 }
             }
 
@@ -390,6 +410,7 @@ public class TechnicianMapActivity extends FragmentActivity implements OnMapRead
                                 currentLocationMarker=mMap.addMarker(new MarkerOptions().position(new LatLng(mLastKnownLocation.getLatitude(),mLastKnownLocation.getLongitude() ))
                                         .title("Current Location"));
                                 currentLocationMarker.setSnippet("Latitude: " + mLastKnownLocation.getLatitude() + ", Longitude:" + mLastKnownLocation.getLongitude());
+                                currentLocationMarker.setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.technician_icon));
                                 mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(mLastKnownLocation.getLatitude(),
                                         mLastKnownLocation.getLongitude() )));
 

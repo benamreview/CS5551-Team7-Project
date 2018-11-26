@@ -160,7 +160,6 @@ public class CustomerHome extends AppCompatActivity {
                             newImage.put("profileImageURL", uri.toString());
                             mCustomerDatabase.updateChildren(newImage);
 
-                            finish();
                             return;
                         }
                     }).addOnFailureListener(new OnFailureListener() {

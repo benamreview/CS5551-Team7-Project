@@ -1,5 +1,6 @@
 package com.fixitup.cs5551.fixitupapp;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -7,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -172,8 +174,10 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
             @Override
             public void onClick(View v) {
                 requestInitiated = false;
-                geoQuery.removeAllListeners();
-                technicianRef.removeEventListener(technicianLocationRefListener);
+                if (geoQuery != null){
+                    geoQuery.removeAllListeners();
+                    technicianRef.removeEventListener(technicianLocationRefListener);
+                }
 
                 if (foundTechnicianID != null){
                     DatabaseReference technicianRef= FirebaseDatabase.getInstance().getReference().child("Users").child("Technicians").child(foundTechnicianID).child("requestCustomerID");
@@ -208,9 +212,23 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
         mSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(CustomerMapActivity.this, CustomerHome.class);
-                startActivity(intent);
-                finish();
+                mCancel.performClick();
+                AlertDialog.Builder builder = new AlertDialog.Builder(CustomerMapActivity.this);
+                builder.setMessage(R.string.warning_msg)
+                        .setPositiveButton("Yes, I Understand!", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                Intent intent = new Intent(CustomerMapActivity.this, CustomerHome.class);
+                                startActivity(intent);
+                                //finish();
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // User cancelled the dialog
+                            }
+                        });
+                builder.show();
+
             }
         });
     }

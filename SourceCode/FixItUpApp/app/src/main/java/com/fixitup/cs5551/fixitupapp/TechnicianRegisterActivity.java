@@ -13,9 +13,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class TechnicianRegisterActivity extends AppCompatActivity {
-EditText name,contact, zip, specialization;
-Button btn;
-DatabaseReference dbr;
+    EditText name,contact, zip, specialization;
+    Button btn;
+    DatabaseReference dbr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +65,8 @@ DatabaseReference dbr;
             specialization.setError("specialization cannot be blank");
         }
        // if (!TextUtils.isEmpty(tName)&& !TextUtils.isEmpty(tMobile)&& !TextUtils.isEmpty(tZipcode)&& !TextUtils.isEmpty(tExpertise)) {
-           else{ Intent intent = getIntent();
+           else{
+            Intent intent = getIntent();
             String id= intent.getStringExtra("user_id");
             tEmail= intent.getStringExtra("user_email");
             TechnicianDetails td = new TechnicianDetails( tEmail,tName,tMobile,tZipcode,tExpertise);

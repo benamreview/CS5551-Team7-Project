@@ -19,31 +19,32 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class CustomerSettingsActivity extends AppCompatActivity {
-    EditText name, contact, zip;
+public class TechnicianSettingsActivity extends AppCompatActivity {
+    EditText name,contact, zip, specialization;
     Button btn, backBtn;
     DatabaseReference dbr;
-    DatabaseReference currentCustomerRef;
+    DatabaseReference currentTechnicianRef;
     String userID;
     String userEmail;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_customer_settings);
+        setContentView(R.layout.activity_technician_settings);
 
         btn = (Button) findViewById(R.id.detailButton);
         backBtn = (Button) findViewById(R.id.back);
 
-        dbr= FirebaseDatabase.getInstance().getReference().child("Users").child("Customers");
+        dbr= FirebaseDatabase.getInstance().getReference().child("Users").child("Technicians");
         userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
         userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
-        currentCustomerRef = dbr.child(userID);
+        currentTechnicianRef = dbr.child(userID);
 
         name=(EditText)findViewById(R.id.editTextName);
         contact =(EditText)findViewById(R.id.editTextConatact);
         zip=(EditText)findViewById(R.id.editTextZip);
+        specialization=(EditText)findViewById(R.id.editTextType);
 
-        currentCustomerRef.addValueEventListener(new ValueEventListener() {
+        currentTechnicianRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 //To-be implemented: have a spinner and s
@@ -56,6 +57,9 @@ public class CustomerSettingsActivity extends AppCompatActivity {
                     }
                     else if (ds.getKey().equals("zipcode")){
                         zip.setText(ds.getValue().toString());
+                    }
+                    else if (ds.getKey().equals("type")){
+                        specialization.setText(ds.getValue().toString());
                     }
                 }
             }
@@ -77,11 +81,11 @@ public class CustomerSettingsActivity extends AppCompatActivity {
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(CustomerSettingsActivity.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(TechnicianSettingsActivity.this);
                 builder.setMessage(R.string.warning_msg3)
                         .setPositiveButton("Yes, I Understand!", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                Intent intent = new Intent(CustomerSettingsActivity.this, CustomerHome.class);
+                                Intent intent = new Intent(TechnicianSettingsActivity.this, TechnicianHome.class);
                                 startActivity(intent);
                             }
                         })
@@ -100,7 +104,8 @@ public class CustomerSettingsActivity extends AppCompatActivity {
         String tName = name.getText().toString().trim();
         String tMobile = contact.getText().toString().trim();
         String tZipcode = zip.getText().toString().trim();
-        if(TextUtils.isEmpty(tName)&& TextUtils.isEmpty(tMobile)&& TextUtils.isEmpty(tZipcode)) {
+        String tExpertise = specialization.getText().toString().trim();
+        if(TextUtils.isEmpty(tName)&& TextUtils.isEmpty(tMobile)&& TextUtils.isEmpty(tZipcode)&& TextUtils.isEmpty(tExpertise)) {
             Toast.makeText(this,"Please enter details",Toast.LENGTH_LONG).show();
         }
         else if(tName.isEmpty()){
@@ -121,16 +126,19 @@ public class CustomerSettingsActivity extends AppCompatActivity {
         else if(tZipcode.length()!=5){
             zip.setError("Enter a valid Zipcode ");
         }
+        else if(tExpertise.isEmpty()){
+            specialization.setError("specialization cannot be blank");
+        }
         // if (!TextUtils.isEmpty(tName)&& !TextUtils.isEmpty(tMobile)&& !TextUtils.isEmpty(tZipcode)&& !TextUtils.isEmpty(tExpertise)) {
         else{
-            final CustomerDetails cd = new CustomerDetails( userEmail, tName, tMobile, tZipcode);
-            AlertDialog.Builder builder = new AlertDialog.Builder(CustomerSettingsActivity.this);
+            final TechnicianDetails td = new TechnicianDetails( userEmail, tName, tMobile, tZipcode, tExpertise);
+            AlertDialog.Builder builder = new AlertDialog.Builder(TechnicianSettingsActivity.this);
             builder.setMessage(R.string.warning_msg2)
                     .setPositiveButton("Yes, I Understand!", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
 
-                            dbr.child(userID).setValue(cd);
-                            Toast.makeText(CustomerSettingsActivity.this,"Information Updated Successfully",Toast.LENGTH_LONG).show();
+                            dbr.child(userID).setValue(td);
+                            Toast.makeText(TechnicianSettingsActivity.this,"Information Updated Successfully",Toast.LENGTH_LONG).show();
                         }
                     })
                     .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

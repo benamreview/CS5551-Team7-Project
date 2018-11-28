@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".CustomerSettingsActivity"
+    tools:context=".TechnicianSettingsActivity"
     android:paddingLeft="18dp"
     android:paddingRight="18dp"
     android:paddingTop="@dimen/activity_vertical_margin"
@@ -84,6 +84,27 @@
                 android:layout_height="1dp"
                 android:background="#f9d7db" />
 
+
+            <EditText
+                android:id="@+id/editTextType"
+                android:layout_marginLeft="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:ems="10"
+                android:hint="Enter specialization"
+                android:inputType="text"
+                tools:layout_editor_absoluteX="95dp"
+                tools:layout_editor_absoluteY="293dp"
+                android:drawablePadding="12dp"
+                android:padding="8dp"
+                android:textColorHint="#fff"
+                android:maxLines="1"
+                android:background="@android:color/transparent"/>
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:background="#f9d7db" />
 
             <Button
                 android:id="@+id/detailButton"

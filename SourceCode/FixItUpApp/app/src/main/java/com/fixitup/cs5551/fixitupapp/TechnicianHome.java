@@ -38,7 +38,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CustomerHome extends AppCompatActivity {
+public class TechnicianHome extends AppCompatActivity {
     ListView lv;
     private Button mMapBtn, mLogout, mSettings;
 
@@ -50,19 +50,19 @@ public class CustomerHome extends AppCompatActivity {
 
     private String userID;
 
-    private DatabaseReference mCustomerDatabase;
+    private DatabaseReference mTechnicianDatabase;
     DatabaseReference dbr;
-       TechnicianDetails td;
-       ArrayList<String> list;
-       ArrayAdapter<String> ad;
+    TechnicianDetails td;
+    ArrayList<String> list;
+    ArrayAdapter<String> ad;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_customer_home);
+        setContentView(R.layout.activity_technician_home);
 
         mProfileImage = (ImageView) findViewById(R.id.profileImg);
         userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        mCustomerDatabase= FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child(userID);
+        mTechnicianDatabase= FirebaseDatabase.getInstance().getReference().child("Users").child("Technicians").child(userID);
 
         dbr = FirebaseDatabase.getInstance().getReference().child("Users").child("Technicians");
         lv = (ListView)findViewById(R.id.listView);
@@ -92,7 +92,7 @@ public class CustomerHome extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(CustomerHome.this, CustomerMapActivity.class);
+                Intent intent = new Intent(TechnicianHome.this, TechnicianMapActivity.class);
                 startActivity(intent);
                 finish();
                 return;
@@ -103,7 +103,7 @@ public class CustomerHome extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(CustomerHome.this, CustomerSettingsActivity.class);
+                Intent intent = new Intent(TechnicianHome.this, TechnicianSettingsActivity.class);
                 startActivity(intent);
                 finish();
                 return;
@@ -115,7 +115,7 @@ public class CustomerHome extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(CustomerHome.this, MainActivity.class);
+                Intent intent = new Intent(TechnicianHome.this, MainActivity.class);
                 startActivity(intent);
             }
         });
@@ -141,7 +141,6 @@ public class CustomerHome extends AppCompatActivity {
             mProfileImage.setImageURI(resultURI);
             applyChanges();
         }
-
     }
 
     //Apply changes for profile images on Firebase Storage
@@ -170,7 +169,7 @@ public class CustomerHome extends AppCompatActivity {
                         public void onSuccess(Uri uri) {
                             Map newImage = new HashMap();
                             newImage.put("profileImageURL", uri.toString());
-                            mCustomerDatabase.updateChildren(newImage);
+                            mTechnicianDatabase.updateChildren(newImage);
                             return;
                         }
                     }).addOnFailureListener(new OnFailureListener() {
@@ -188,7 +187,7 @@ public class CustomerHome extends AppCompatActivity {
         }
     }
     private void getUserInfo(){
-        mCustomerDatabase.addValueEventListener(new ValueEventListener() {
+        mTechnicianDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists() && dataSnapshot.getChildrenCount() > 0){

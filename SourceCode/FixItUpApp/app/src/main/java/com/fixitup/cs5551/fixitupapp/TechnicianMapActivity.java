@@ -2,6 +2,7 @@ package com.fixitup.cs5551.fixitupapp;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -16,6 +17,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
 import android.location.LocationListener;
@@ -67,7 +69,7 @@ UMKC: 39.035790, -94.577890
 public class TechnicianMapActivity extends FragmentActivity implements OnMapReadyCallback, FetchAddressTask.OnTaskCompleted {
     private GoogleMap mMap;
 
-    private Button mLogout;
+    private Button mLogout, mSettings;
     private boolean LoggedOut;
 
     private Marker repairMarker;
@@ -101,6 +103,10 @@ public class TechnicianMapActivity extends FragmentActivity implements OnMapRead
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_technician_map);
+
+        mLogout = (Button) findViewById(R.id.logout);
+        mSettings = (Button) findViewById(R.id.settings);
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -174,7 +180,7 @@ public class TechnicianMapActivity extends FragmentActivity implements OnMapRead
             }
         };
         //Create Logout button and its behavior
-        mLogout = (Button) findViewById(R.id.logout);
+
         LoggedOut = false;
         mLogout.setOnClickListener(new View.OnClickListener(){
 
@@ -208,7 +214,32 @@ public class TechnicianMapActivity extends FragmentActivity implements OnMapRead
                 startActivity(intent);
             }
         });
+
+        mSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(TechnicianMapActivity.this);
+                builder.setMessage(R.string.warning_msg)
+                        .setPositiveButton("Yes, I Understand!", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                Intent intent = new Intent(TechnicianMapActivity.this, TechnicianHome.class);
+                                startActivity(intent);
+                                //finish();
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // User cancelled the dialog
+                            }
+                        });
+                builder.show();
+
+            }
+        });
+
         getAssignedCustomer();
+
+
     }
     private void getAssignedCustomer(){
         String technicianID = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -411,7 +442,7 @@ public class TechnicianMapActivity extends FragmentActivity implements OnMapRead
                                 currentLocationMarker=mMap.addMarker(new MarkerOptions().position(new LatLng(mLastKnownLocation.getLatitude(),mLastKnownLocation.getLongitude() ))
                                         .title("Current Location"));
                                 currentLocationMarker.setSnippet("Latitude: " + mLastKnownLocation.getLatitude() + ", Longitude:" + mLastKnownLocation.getLongitude());
-                                currentLocationMarker.setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.technician_icon));
+                                currentLocationMarker.setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.mappin_icon));
                                 mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(mLastKnownLocation.getLatitude(),
                                         mLastKnownLocation.getLongitude() )));
 

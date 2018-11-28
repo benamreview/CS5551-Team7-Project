@@ -287,10 +287,7 @@ public class TechnicianMapActivity extends FragmentActivity implements OnMapRead
                     DatabaseReference orderRef = FirebaseDatabase.getInstance().getReference("Orders").push();
                     orderRef.setValue(order);
                     orderID = orderRef.getKey().toString();
-
-                    //Add technician ID to customer
-                    DatabaseReference customerRef= FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child(customerID);
-                    customerRef.child("currentOrderID").setValue(orderID);
+                    
                 }
                 else {
                     AlertDialog.Builder builder = new AlertDialog.Builder(TechnicianMapActivity.this);

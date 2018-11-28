@@ -304,6 +304,9 @@ public class TechnicianMapActivity extends FragmentActivity implements OnMapRead
                                     //Delete technicianID out of customerID
                                     DatabaseReference customerRef= FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child(customerID);
                                     customerRef.child("currentTechnicianID").removeValue();
+
+                                    //Delete requestcustomerID
+
                                 }
                             })
                             .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

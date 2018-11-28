@@ -70,10 +70,8 @@ public class CustomerHome extends AppCompatActivity {
                         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                TechnicianDetails o =(TechnicianDetails) parent.getItemAtPosition(position);
+                                Object o = parent.getItemAtPosition(position);
                                 Intent i = new Intent(CustomerHome.this, CustomerProfile.class);
-                                String name =o.getName();
-                                i.putExtra("Name", name);
                                 startActivity(i);
                             }
                         });

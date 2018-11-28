@@ -72,7 +72,7 @@ public class TechnicianRegisterActivity extends AppCompatActivity {
             Intent intent = getIntent();
             String id= intent.getStringExtra("user_id");
             tEmail= intent.getStringExtra("user_email");
-            TechnicianDetails td = new TechnicianDetails( tEmail,tName,tMobile,tZipcode,tExpertise,tFee,availability);
+            TechnicianDetails td = new TechnicianDetails( tEmail,tName,tMobile,tZipcode,tExpertise,tFee);
             dbr.child(id).setValue(td);
             Toast.makeText(this,"Technician is added",Toast.LENGTH_LONG).show();
         } /*else{

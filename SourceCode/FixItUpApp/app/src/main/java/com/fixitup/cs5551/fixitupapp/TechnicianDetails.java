@@ -7,7 +7,6 @@ public class TechnicianDetails {
     String zipcode;
     String type;
     String fee;
-    String availability;
       public TechnicianDetails(){
           email = "";
           name = "";
@@ -15,16 +14,14 @@ public class TechnicianDetails {
           zipcode = "";
           type = "";
           fee="";
-          availability="";
       }
-    public TechnicianDetails(String Email, String Name, String Contact, String Zipcode, String Type, String Fee, String Availability) {
+    public TechnicianDetails(String Email, String Name, String Contact, String Zipcode, String Type, String Fee) {
         email = Email;
         name = Name;
         contact = Contact;
         zipcode = Zipcode;
         type = Type;
         fee = Fee;
-        availability = Availability;
 
     }
     public String getEmail() {
@@ -50,5 +47,4 @@ public class TechnicianDetails {
     public String getFee(){
           return fee;
     }
-    public String getAvailability(){return availability;}
 }

@@ -20,7 +20,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 public class TechnicianSettingsActivity extends AppCompatActivity {
-    EditText name,contact, zip, specialization;
+    EditText name,contact, zip, specialization, fee;
     Button btn, backBtn;
     DatabaseReference dbr;
     DatabaseReference currentTechnicianRef;
@@ -43,6 +43,7 @@ public class TechnicianSettingsActivity extends AppCompatActivity {
         contact =(EditText)findViewById(R.id.editTextConatact);
         zip=(EditText)findViewById(R.id.editTextZip);
         specialization=(EditText)findViewById(R.id.editTextType);
+        fee = (EditText)findViewById(R.id.editTextCharge);
 
         currentTechnicianRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -105,6 +106,7 @@ public class TechnicianSettingsActivity extends AppCompatActivity {
         String tMobile = contact.getText().toString().trim();
         String tZipcode = zip.getText().toString().trim();
         String tExpertise = specialization.getText().toString().trim();
+        String tFee = fee.getText().toString().trim();
         if(TextUtils.isEmpty(tName)&& TextUtils.isEmpty(tMobile)&& TextUtils.isEmpty(tZipcode)&& TextUtils.isEmpty(tExpertise)) {
             Toast.makeText(this,"Please enter details",Toast.LENGTH_LONG).show();
         }
@@ -131,7 +133,7 @@ public class TechnicianSettingsActivity extends AppCompatActivity {
         }
         // if (!TextUtils.isEmpty(tName)&& !TextUtils.isEmpty(tMobile)&& !TextUtils.isEmpty(tZipcode)&& !TextUtils.isEmpty(tExpertise)) {
         else{
-            final TechnicianDetails td = new TechnicianDetails( userEmail, tName, tMobile, tZipcode, tExpertise);
+            final TechnicianDetails td = new TechnicianDetails( userEmail, tName, tMobile, tZipcode, tExpertise, tFee);
             AlertDialog.Builder builder = new AlertDialog.Builder(TechnicianSettingsActivity.this);
             builder.setMessage(R.string.warning_msg2)
                     .setPositiveButton("Yes, I Understand!", new DialogInterface.OnClickListener() {

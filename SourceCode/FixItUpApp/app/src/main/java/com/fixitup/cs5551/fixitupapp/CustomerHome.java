@@ -42,7 +42,6 @@ import java.util.List;
 import java.util.Map;
 
 public class CustomerHome extends AppCompatActivity {
-    ListView lv;
     private Button mMapBtn, mLogout, mSettings;
 
     private ImageView mProfileImage;

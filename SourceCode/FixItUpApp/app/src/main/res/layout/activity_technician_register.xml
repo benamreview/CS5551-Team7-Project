@@ -105,6 +105,49 @@
                 android:layout_width="wrap_content"
                 android:layout_height="1dp"
                 android:background="#f9d7db" />
+            <EditText
+                android:id="@+id/editTextCharge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:hint="Enter your fee"
+                android:inputType="number"
+                android:ems="12"
+                tools:layout_editor_absoluteX="84dp"
+                tools:layout_editor_absoluteY="30dp"
+                android:drawablePadding="12dp"
+                android:padding="8dp"
+                android:textColorHint="#fff"
+                android:maxLines="1"
+                android:background="@android:color/transparent"
+                android:layout_marginTop="10dp"/>
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:background="#f9d7db" />
+
+            <Spinner
+                android:id="@+id/spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="20dp"
+                tools:layout_editor_absoluteX="84dp"
+                tools:layout_editor_absoluteY="30dp"
+                android:ems="12"
+                android:drawablePadding="12dp"
+                android:padding="8dp"
+                android:textColorHint="#fff"
+                android:background="@android:color/transparent"
+                android:entries="@array/availability"
+                android:prompt="@string/prompt"
+                android:spinnerMode="dropdown">
+
+            </Spinner>
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:background="#f9d7db" />
 
             <Button
                 android:id="@+id/detailButton"

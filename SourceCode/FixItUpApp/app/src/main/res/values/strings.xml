@@ -10,4 +10,9 @@
     <string name="loading">Loading…</string>
     <string name="service_not_available">Service not available</string>
     <string name="invalid_lat_long_used">Invalid coordinates used</string>
+    <string name="prompt">Select Availability</string>
+    <string-array name="availability">
+        <item>Yes</item>
+        <item>No</item>
+    </string-array>
 </resources>

@@ -11,9 +11,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import com.bumptech.glide.Glide;
@@ -24,6 +26,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -51,10 +54,16 @@ public class CustomerHome extends AppCompatActivity {
     private String userID;
 
     private DatabaseReference mCustomerDatabase;
+
+    private Button search;
+
+    private EditText type;
+
+    ListView lv;
     DatabaseReference dbr;
-       TechnicianDetails td;
-       ArrayList<String> list;
-       ArrayAdapter<String> ad;
+    TechnicianDetails td;
+    ArrayList<String> list;
+    ArrayAdapter<String> ad;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,29 +73,54 @@ public class CustomerHome extends AppCompatActivity {
         userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
         mCustomerDatabase= FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child(userID);
 
+        search=(Button)findViewById(R.id.btn);
+        type=(EditText)findViewById(R.id.search);
+        //
         dbr = FirebaseDatabase.getInstance().getReference().child("Users").child("Technicians");
         lv = (ListView)findViewById(R.id.listView);
         td = new TechnicianDetails();
         list = new ArrayList<>();
         ad = new ArrayAdapter<String>(this, R.layout.list_layout, R.id.technician, list);
-        dbr.addValueEventListener(new ValueEventListener() {
+        search.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                //To-be implemented: have a spinner and s
-                for(DataSnapshot ds: dataSnapshot.getChildren()){
-                    td = ds.getValue(TechnicianDetails.class);
-                    list.add(td.getName().toString()+"\n"+td.getEmail().toString()+"\n"+td.getContact().toString()+"\n "+td.getType().toString()+"\n"+td.getZipcode().toString());
-                }
-                lv.setAdapter(ad);
-            }
+            public void onClick(View v) {
+                Query q = dbr.orderByChild("type").equalTo(type.getText().toString().trim());
+                q.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        //To-be implemented: have a spinner and s
+                        list.clear();
+                        for(DataSnapshot ds: dataSnapshot.getChildren()){
+                            //String s = dataSnapshot.child("type").getValue().toString();
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+                            td = ds.getValue(TechnicianDetails.class);
+                            //  if(s.equalsIgnoreCase(st)) {
+                            // boolean b= st.equalsIgnoreCase(td.getType().toString());
+                            //if(b==true){
+                            list.add(td.getName().toString() + "\n" + td.getEmail().toString() + "\n" + td.getContact().toString() + "\n " + td.getType().toString() + "\n" + td.getZipcode().toString());
+                            //}
+                        }
+                        lv.setAdapter(ad);
+                        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                TechnicianDetails o =(TechnicianDetails) parent.getItemAtPosition(position);
+                                Intent i = new Intent(CustomerHome.this, CustomerProfile.class);
+                                String name =o.getName();
+                                i.putExtra("Name", name);
+                                startActivity(i);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
 
             }
         });
-        //Map Btn
-        //To-be-implemented: Display map on this screen.
         mMapBtn = (Button) findViewById(R.id.mapBtn);
         mMapBtn.setOnClickListener(new View.OnClickListener(){
 
@@ -207,4 +241,3 @@ public class CustomerHome extends AppCompatActivity {
         });
     }
 }
-

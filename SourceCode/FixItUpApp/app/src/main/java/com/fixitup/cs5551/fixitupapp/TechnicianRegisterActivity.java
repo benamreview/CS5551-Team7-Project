@@ -7,13 +7,14 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class TechnicianRegisterActivity extends AppCompatActivity {
-    EditText name,contact, zip, specialization;
+    EditText name, contact, zip, specialization, fee;
     Button btn;
     DatabaseReference dbr;
 
@@ -27,6 +28,7 @@ public class TechnicianRegisterActivity extends AppCompatActivity {
         contact =(EditText)findViewById(R.id.editTextConatact);
         zip=(EditText)findViewById(R.id.editTextZip);
         specialization=(EditText)findViewById(R.id.editTextType);
+        fee=(EditText)findViewById(R.id.editTextCharge);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -40,7 +42,8 @@ public class TechnicianRegisterActivity extends AppCompatActivity {
         String tMobile = contact.getText().toString().trim();
         String tZipcode = zip.getText().toString().trim();
         String tExpertise = specialization.getText().toString().trim();
-        if(TextUtils.isEmpty(tName)&& TextUtils.isEmpty(tMobile)&& TextUtils.isEmpty(tZipcode)&& TextUtils.isEmpty(tExpertise)) {
+        String tFee = fee.getText().toString().trim();
+        if(TextUtils.isEmpty(tName)&& TextUtils.isEmpty(tMobile)&& TextUtils.isEmpty(tZipcode)&& TextUtils.isEmpty(tExpertise) && TextUtils.isEmpty(tFee)) {
             Toast.makeText(this,"Please enter details",Toast.LENGTH_LONG).show();
         }
         else if(tName.isEmpty()){
@@ -69,7 +72,7 @@ public class TechnicianRegisterActivity extends AppCompatActivity {
             Intent intent = getIntent();
             String id= intent.getStringExtra("user_id");
             tEmail= intent.getStringExtra("user_email");
-            TechnicianDetails td = new TechnicianDetails( tEmail,tName,tMobile,tZipcode,tExpertise);
+            TechnicianDetails td = new TechnicianDetails( tEmail,tName,tMobile,tZipcode,tExpertise,tFee,availability);
             dbr.child(id).setValue(td);
             Toast.makeText(this,"Technician is added",Toast.LENGTH_LONG).show();
         } /*else{
@@ -78,4 +81,3 @@ public class TechnicianRegisterActivity extends AppCompatActivity {
 
     }
     }
-

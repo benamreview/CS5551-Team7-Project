@@ -18,5 +18,19 @@
         android:id = "@+id/logout"
         android:text="logout">
     </Button>
+    <Button
+        android:id="@+id/settings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|top"
+        android:text="Home Page"
+        ></Button>
+    <Button
+        android:id="@+id/notification"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:text=""
+        android:visibility="invisible"></Button>
 </FrameLayout>
 

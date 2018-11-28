@@ -8,13 +8,11 @@ import android.widget.Button;
 import android.widget.ImageButton;
 
 public class MainActivity extends AppCompatActivity {
-    private Button mTechnician, mCustomer;
+    private ImageButton mTechnician, mCustomer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ImageButton mTechnician;
-        ImageButton mCustomer;
         mTechnician = (ImageButton) findViewById(R.id.technician);
         mCustomer = (ImageButton) findViewById(R.id.customer);
 
@@ -24,17 +22,16 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, CustomerLoginActivity.class);
+                Intent intent = new Intent(MainActivity.this, CustomerLoginScreenActivity.class);
                 startActivity(intent);
                 finish();
                 return;
             }
         });
         mTechnician.setOnClickListener(new View.OnClickListener(){
-
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, TechnicianLoginActivity.class);
+                Intent intent = new Intent(MainActivity.this, TechnicianLoginScreenActivity.class);
                 startActivity(intent);
                 finish();
                 return;

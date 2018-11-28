@@ -2,6 +2,7 @@ package com.fixitup.cs5551.fixitupapp;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -16,6 +17,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
 import android.location.LocationListener;
@@ -34,6 +36,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -41,15 +44,19 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.events.EventHandler;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+
 /*
 Location List:
 
@@ -61,7 +68,11 @@ UMKC: 39.035790, -94.577890
 //more frequently (make it more continuous and in-motion, not statically working whenever a function is called)
 public class TechnicianMapActivity extends FragmentActivity implements OnMapReadyCallback, FetchAddressTask.OnTaskCompleted {
     private GoogleMap mMap;
-    private Button mLogout;
+
+    private Button mLogout, mSettings, mNotification;
+    private boolean LoggedOut, sessionStarted;
+
+    private Marker repairMarker;
     FusedLocationProviderClient mFusedLocationProviderClient;
     private static final String TAG = TechnicianMapActivity.class.getSimpleName();
     boolean mLocationPermissionGranted;
@@ -70,8 +81,6 @@ public class TechnicianMapActivity extends FragmentActivity implements OnMapRead
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private Location mLastKnownLocation;
     private LocationCallback mLocationCallback;
-    GoogleApiClient mGoogleApiClient;
-    Location mLastLocation;
     //In order for LocationRequest to work, we need to install the latest version of Google Play Service (dependencies tab in Project Structure)
     LocationRequest mLocationRequest;
     private Marker currentLocationMarker;
@@ -81,16 +90,26 @@ public class TechnicianMapActivity extends FragmentActivity implements OnMapRead
     private static final String TRACKING_LOCATION_KEY = "tracking_location";
     private LocationRequest getLocationRequest() {
         LocationRequest locationRequest = new LocationRequest();
-        locationRequest.setInterval(10000);
-        locationRequest.setFastestInterval(7000);
+        locationRequest.setInterval(2000);
+        locationRequest.setFastestInterval(1200);
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         return locationRequest;
     }
+
+    //Declare customerID
+    private String customerID = "";
+    private String userID, orderID = null;;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_technician_map);
+
+        mLogout = (Button) findViewById(R.id.logout);
+        mSettings = (Button) findViewById(R.id.settings);
+        mNotification = (Button) findViewById(R.id.notification);
+
+        sessionStarted = false;
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -103,6 +122,8 @@ public class TechnicianMapActivity extends FragmentActivity implements OnMapRead
         mLocationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
+
+                //Fetch new Address, Display the current location in real time, move marker, and update Firebase
                 new FetchAddressTask(TechnicianMapActivity.this, TechnicianMapActivity.this)
                         .execute(locationResult.getLastLocation());
                 mLastKnownLocation=locationResult.getLastLocation();
@@ -112,37 +133,267 @@ public class TechnicianMapActivity extends FragmentActivity implements OnMapRead
                     currentLocationMarker.remove();
                     currentLocationMarker = mMap.addMarker(new MarkerOptions().position(new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()))
                             .title("Current Location"));
+                    currentLocationMarker.setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.mappin_icon));
                     currentLocationMarker.setSnippet("Latitude: " + mLastKnownLocation.getLatitude() + ", Longitude:" + mLastKnownLocation.getLongitude());
                 }
+
                 //Update Address to GeoFire
 
-                String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("TechnicianAvailable");
+                userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                DatabaseReference availableRef = FirebaseDatabase.getInstance().getReference("TechnicianAvailable");
+                DatabaseReference busyRef = FirebaseDatabase.getInstance().getReference("TechnicianBusy");
 
+                GeoFire geoFireAvailable = new GeoFire(availableRef);
+                GeoFire geoFireBusy = new GeoFire(busyRef);
+
+                //Check whether this technician has been assigned a customer or not, update the corresponding location tables
+                switch (customerID){
+                    case "":
+                        //Technician is free (not assigned)
+                        geoFireBusy.removeLocation(userID, new GeoFire.CompletionListener(){
+                            @Override
+                            public void onComplete(String key, DatabaseError error) {
+                                //Do some stuff if you want to
+                            }
+                        });
+                        geoFireAvailable.setLocation(userID, new GeoLocation(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()), new GeoFire.CompletionListener(){
+                            @Override
+                            public void onComplete(String key, DatabaseError error) {
+                                //Do some stuff if you want to
+                            }
+                        });
+                        break;
+                    default:
+                        //Technician is now assigned
+                        geoFireAvailable.removeLocation(userID, new GeoFire.CompletionListener(){
+                            @Override
+                            public void onComplete(String key, DatabaseError error) {
+                                //Do some stuff if you want to
+                            }
+                        });
+                        geoFireBusy.setLocation(userID, new GeoLocation(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()), new GeoFire.CompletionListener(){
+                            @Override
+                            public void onComplete(String key, DatabaseError error) {
+                                //Do some stuff if you want to
+                            }
+                        });
+                        //Add location to display distance
+                        Location loc1 = new Location("");
+                        loc1.setLatitude(mLastKnownLocation.getLatitude());
+                        loc1.setLongitude(mLastKnownLocation.getLongitude());
+
+                        Location loc2 = new Location("");
+                        loc2.setLatitude(customerLatLng.latitude);
+                        loc2.setLongitude(customerLatLng.longitude);
+                        //Notification that technician is nearby
+                        //Calculate distance
+                        float distance = loc1.distanceTo(loc2);
+                        if (!sessionStarted){
+                            if (distance <15){
+                                mNotification.setVisibility(View.VISIBLE);
+                                mNotification.setText("You are here! Click to start Session!");
+                            }
+                            else if (distance <100){
+                                mNotification.setVisibility(View.VISIBLE);
+                                mNotification.setText("You are almost here (within 100m)! Please be prepared!");
+                            }
+                            else if (distance < 200){
+                                mNotification.setVisibility(View.VISIBLE);
+                                mNotification.setText("You are nearby (within 200m)! Please be prepared!");
+                            }
+                            else{
+                                mNotification.setVisibility(View.INVISIBLE);
+                                mNotification.setText("Customer is at the location (" + String.valueOf(distance) + " meters) from you");
+                            }
+                            ;
+                            break;
+                        }
+
+                }
+
+            }
+        };
+        //Create Logout button and its behavior
+
+        LoggedOut = false;
+        mLogout.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                //Delete current customerID;
+                customerID="";
+                getAssignedCustomer(); //resets customerID in database
+                //Delete location from current available list
+                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("TechnicianAvailable");
                 GeoFire geoFire = new GeoFire(ref);
-                geoFire.setLocation(userID, new GeoLocation(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()), new GeoFire.CompletionListener(){
+                geoFire.removeLocation(userID, new GeoFire.CompletionListener(){
                     @Override
                     public void onComplete(String key, DatabaseError error) {
                         //Do some stuff if you want to
                     }
                 });
+                //Clear up technician in busy queue
+                ref = FirebaseDatabase.getInstance().getReference("TechnicianBusy");
+                geoFire = new GeoFire(ref);
+                geoFire.removeLocation(userID, new GeoFire.CompletionListener(){
+                    @Override
+                    public void onComplete(String key, DatabaseError error) {
+                        //Do some stuff if you want to
+                    }
+                });
+                DatabaseReference assignedCustomerRef= FirebaseDatabase.getInstance().getReference().child("Users").child("Technicians").child(userID).child("requestCustomerID");
+                if (assignedCustomerRef != null){
+                    assignedCustomerRef.removeValue();
+                }
+                FirebaseAuth.getInstance().signOut();
+                LoggedOut=true;
 
-            }
-        };
-        //Create Logout Button
-        mLogout = (Button) findViewById(R.id.logout);
-        mLogout.setOnClickListener(new View.OnClickListener(){
-
-            @Override
-            public void onClick(View v) {
-               FirebaseAuth.getInstance().signOut();
                 Intent intent = new Intent(TechnicianMapActivity.this, MainActivity.class);
                 startActivity(intent);
             }
         });
+
+        mSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(TechnicianMapActivity.this);
+                builder.setMessage(R.string.warning_msg)
+                        .setPositiveButton("Yes, I Understand!", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                Intent intent = new Intent(TechnicianMapActivity.this, TechnicianHome.class);
+                                startActivity(intent);
+                                //finish();
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // User cancelled the dialog
+                            }
+                        });
+                builder.show();
+
+            }
+        });
+
+        mNotification.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!sessionStarted){
+                    sessionStarted=true;
+                    mNotification.setVisibility(View.VISIBLE);
+                    mNotification.setText("Session is Active!\nClick to End Session");
+                    //Add order details
+                    Order order = new Order (userID, customerID, "ongoing");
+                    DatabaseReference orderRef = FirebaseDatabase.getInstance().getReference("Orders").push();
+                    orderRef.setValue(order);
+                    orderID = orderRef.getKey().toString();
+                    
+                }
+                else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(TechnicianMapActivity.this);
+                    builder.setMessage(R.string.warning_msg4)
+                            .setPositiveButton("Yes, I do!", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    sessionStarted=false;
+                                    mNotification.setVisibility(View.GONE);
+                                    mNotification.setText("");
+                                    //Add Order Details to Firebase
+                                    DatabaseReference orderRef = FirebaseDatabase.getInstance().getReference("Orders").child(orderID);
+                                    orderRef.child("status").setValue("completed");
+
+                                    //Delete technicianID out of customerID
+                                    DatabaseReference customerRef= FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child(customerID);
+                                    customerRef.child("currentTechnicianID").removeValue();
+
+                                    //Delete requestcustomerID
+
+                                }
+                            })
+                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    // User cancelled the dialog
+                                }
+                            });
+                    builder.show();
+
+                }
+            }
+        });
+        getAssignedCustomer();
+
+
     }
+    private void getAssignedCustomer(){
+        String technicianID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        final DatabaseReference assignedCustomerRef= FirebaseDatabase.getInstance().getReference().child("Users").child("Technicians").child(technicianID).child("requestCustomerID");
+        assignedCustomerRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                //If a customer id is found
+                if (dataSnapshot.exists()){
+                    customerID = dataSnapshot.getValue().toString();
+                    getRepairLocation();
+                }
+                //if the customer cancels the request
+                else {
+                    customerID = "";
+                    if (repairMarker!=null){
+                        repairMarker.remove();
+                    }
+                    if (repairLocationRef != null){
+                        repairLocationRef.removeEventListener(repairLocationRefListener);
+                    }
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
 
+    }
+    private DatabaseReference repairLocationRef;
+    private ValueEventListener repairLocationRefListener;
+    //Assign local variables global so that these can be canceled later
+    private LatLng customerLatLng;
+    private void getRepairLocation(){
+        repairLocationRef= FirebaseDatabase.getInstance().getReference().child("customerRequest").child(customerID).child("l");
+        repairLocationRefListener = repairLocationRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                //Check for validity of condition
+                if (dataSnapshot.exists() && !customerID.equals("")){
+                    List<Object> map = (List<Object>) dataSnapshot.getValue();
+                    double locationLat = 0;
+                    double locationLng = 0;
+                    if (map.get(0) != null){
+                        //Convert Longitude and Latitude from object list's string
+                        locationLat = Double.parseDouble(map.get(0).toString());
+
+                    }
+                    if (map.get(1) != null){
+                        //Convert Longitude and Latitude from object list's string
+                        locationLng = Double.parseDouble(map.get(1).toString());
+
+                    }
+                    customerLatLng = new LatLng(locationLat, locationLng);
+                    //To do: Should assign it to a marker variable
+                    repairMarker = mMap.addMarker(new MarkerOptions().position(customerLatLng)
+                            .title("Repair Location"));
+                    repairMarker.setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.repair_icon));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
@@ -159,7 +410,7 @@ public class TechnicianMapActivity extends FragmentActivity implements OnMapRead
         // Prompt the user for permission. If permission is denied, no location is provided
         getLocationPermission();
 
-        //Based on the provided location permision
+        //Based on the provided location permission
         //,turn on (or off) the My Location layer and the related control on the map.
         updateLocationUI();
         //This will be called to move the camera to its initial position
@@ -271,9 +522,10 @@ public class TechnicianMapActivity extends FragmentActivity implements OnMapRead
                                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                         new LatLng(mLastKnownLocation.getLatitude(),
                                                 mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
-                                mMap.addMarker(new MarkerOptions().position(new LatLng(mLastKnownLocation.getLatitude(),mLastKnownLocation.getLongitude() ))
-                                        .title("Current Location"))
-                                        .setSnippet("Latitude: " + mLastKnownLocation.getLatitude() + ", Longitude:" + mLastKnownLocation.getLongitude());
+                                currentLocationMarker=mMap.addMarker(new MarkerOptions().position(new LatLng(mLastKnownLocation.getLatitude(),mLastKnownLocation.getLongitude() ))
+                                        .title("Current Location"));
+                                currentLocationMarker.setSnippet("Latitude: " + mLastKnownLocation.getLatitude() + ", Longitude:" + mLastKnownLocation.getLongitude());
+                                currentLocationMarker.setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.mappin_icon));
                                 mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(mLastKnownLocation.getLatitude(),
                                         mLastKnownLocation.getLongitude() )));
 
@@ -319,18 +571,21 @@ public class TechnicianMapActivity extends FragmentActivity implements OnMapRead
     protected void onStop() {
         super.onStop();
         //Update Address to GeoFire
-        if (FirebaseAuth.getInstance().getCurrentUser() != null){
+        if (LoggedOut == false){
+            customerID="";
             String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("TechnicianAvailable");
+                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("TechnicianAvailable");
 
-            GeoFire geoFire = new GeoFire(ref);
-            geoFire.removeLocation(userID, new GeoFire.CompletionListener(){
-                @Override
-                public void onComplete(String key, DatabaseError error) {
-                    //Do some stuff if you want to
-                }
-            });
+                GeoFire geoFire = new GeoFire(ref);
+                geoFire.removeLocation(userID, new GeoFire.CompletionListener(){
+                    @Override
+                    public void onComplete(String key, DatabaseError error) {
+                        //Do some stuff if you want to
+                    }
+                });
         }
+
+
 
     }
 }

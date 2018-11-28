@@ -15,4 +15,5 @@
     <string name="warning_msg2">WARNING!!!\nIf you proceed, all your previous information will be overwritten!
     \nPlease choose accordingly.</string>
     <string name="warning_msg3">WARNING!!!\nIf you go back, all of your unsaved modification will be discarded!</string>
+    <string name="warning_msg4">WARNING!!!\nIf session is ended, order is complete and final. Do you want to proceed?</string>
 </resources>

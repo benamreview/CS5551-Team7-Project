@@ -69,8 +69,8 @@ UMKC: 39.035790, -94.577890
 public class TechnicianMapActivity extends FragmentActivity implements OnMapReadyCallback, FetchAddressTask.OnTaskCompleted {
     private GoogleMap mMap;
 
-    private Button mLogout, mSettings;
-    private boolean LoggedOut;
+    private Button mLogout, mSettings, mNotification;
+    private boolean LoggedOut, sessionStarted;
 
     private Marker repairMarker;
     FusedLocationProviderClient mFusedLocationProviderClient;
@@ -98,6 +98,7 @@ public class TechnicianMapActivity extends FragmentActivity implements OnMapRead
 
     //Declare customerID
     private String customerID = "";
+    private String userID, orderID = null;;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -106,7 +107,9 @@ public class TechnicianMapActivity extends FragmentActivity implements OnMapRead
 
         mLogout = (Button) findViewById(R.id.logout);
         mSettings = (Button) findViewById(R.id.settings);
+        mNotification = (Button) findViewById(R.id.notification);
 
+        sessionStarted = false;
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -136,7 +139,7 @@ public class TechnicianMapActivity extends FragmentActivity implements OnMapRead
 
                 //Update Address to GeoFire
 
-                String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
                 DatabaseReference availableRef = FirebaseDatabase.getInstance().getReference("TechnicianAvailable");
                 DatabaseReference busyRef = FirebaseDatabase.getInstance().getReference("TechnicianBusy");
 
@@ -174,7 +177,38 @@ public class TechnicianMapActivity extends FragmentActivity implements OnMapRead
                                 //Do some stuff if you want to
                             }
                         });
-                        break;
+                        //Add location to display distance
+                        Location loc1 = new Location("");
+                        loc1.setLatitude(mLastKnownLocation.getLatitude());
+                        loc1.setLongitude(mLastKnownLocation.getLongitude());
+
+                        Location loc2 = new Location("");
+                        loc2.setLatitude(customerLatLng.latitude);
+                        loc2.setLongitude(customerLatLng.longitude);
+                        //Notification that technician is nearby
+                        //Calculate distance
+                        float distance = loc1.distanceTo(loc2);
+                        if (!sessionStarted){
+                            if (distance <15){
+                                mNotification.setVisibility(View.VISIBLE);
+                                mNotification.setText("You are here! Click to start Session!");
+                            }
+                            else if (distance <100){
+                                mNotification.setVisibility(View.VISIBLE);
+                                mNotification.setText("You are almost here (within 100m)! Please be prepared!");
+                            }
+                            else if (distance < 200){
+                                mNotification.setVisibility(View.VISIBLE);
+                                mNotification.setText("You are nearby (within 200m)! Please be prepared!");
+                            }
+                            else{
+                                mNotification.setVisibility(View.INVISIBLE);
+                                mNotification.setText("Customer is at the location (" + String.valueOf(distance) + " meters) from you");
+                            }
+                            ;
+                            break;
+                        }
+
                 }
 
             }
@@ -191,7 +225,6 @@ public class TechnicianMapActivity extends FragmentActivity implements OnMapRead
                 getAssignedCustomer(); //resets customerID in database
                 //Delete location from current available list
                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference("TechnicianAvailable");
-                String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
                 GeoFire geoFire = new GeoFire(ref);
                 geoFire.removeLocation(userID, new GeoFire.CompletionListener(){
                     @Override
@@ -208,8 +241,13 @@ public class TechnicianMapActivity extends FragmentActivity implements OnMapRead
                         //Do some stuff if you want to
                     }
                 });
-               FirebaseAuth.getInstance().signOut();
-               LoggedOut=true;
+                DatabaseReference assignedCustomerRef= FirebaseDatabase.getInstance().getReference().child("Users").child("Technicians").child(userID).child("requestCustomerID");
+                if (assignedCustomerRef != null){
+                    assignedCustomerRef.removeValue();
+                }
+                FirebaseAuth.getInstance().signOut();
+                LoggedOut=true;
+
                 Intent intent = new Intent(TechnicianMapActivity.this, MainActivity.class);
                 startActivity(intent);
             }
@@ -237,6 +275,50 @@ public class TechnicianMapActivity extends FragmentActivity implements OnMapRead
             }
         });
 
+        mNotification.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!sessionStarted){
+                    sessionStarted=true;
+                    mNotification.setVisibility(View.VISIBLE);
+                    mNotification.setText("Session is Active!\nClick to End Session");
+                    //Add order details
+                    Order order = new Order (userID, customerID, "ongoing");
+                    DatabaseReference orderRef = FirebaseDatabase.getInstance().getReference("Orders").push();
+                    orderRef.setValue(order);
+                    orderID = orderRef.getKey().toString();
+
+                    //Add technician ID to customer
+                    DatabaseReference customerRef= FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child(customerID);
+                    customerRef.child("currentOrderID").setValue(orderID);
+                }
+                else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(TechnicianMapActivity.this);
+                    builder.setMessage(R.string.warning_msg4)
+                            .setPositiveButton("Yes, I do!", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    sessionStarted=false;
+                                    mNotification.setVisibility(View.GONE);
+                                    mNotification.setText("");
+                                    //Add Order Details to Firebase
+                                    DatabaseReference orderRef = FirebaseDatabase.getInstance().getReference("Orders").child(orderID);
+                                    orderRef.child("status").setValue("completed");
+
+                                    //Delete technicianID out of customerID
+                                    DatabaseReference customerRef= FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child(customerID);
+                                    customerRef.child("currentTechnicianID").removeValue();
+                                }
+                            })
+                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    // User cancelled the dialog
+                                }
+                            });
+                    builder.show();
+
+                }
+            }
+        });
         getAssignedCustomer();
 
 
@@ -276,6 +358,7 @@ public class TechnicianMapActivity extends FragmentActivity implements OnMapRead
     private DatabaseReference repairLocationRef;
     private ValueEventListener repairLocationRefListener;
     //Assign local variables global so that these can be canceled later
+    private LatLng customerLatLng;
     private void getRepairLocation(){
         repairLocationRef= FirebaseDatabase.getInstance().getReference().child("customerRequest").child(customerID).child("l");
         repairLocationRefListener = repairLocationRef.addValueEventListener(new ValueEventListener() {
@@ -296,9 +379,9 @@ public class TechnicianMapActivity extends FragmentActivity implements OnMapRead
                         locationLng = Double.parseDouble(map.get(1).toString());
 
                     }
-                    LatLng technicianLatLng = new LatLng(locationLat, locationLng);
+                    customerLatLng = new LatLng(locationLat, locationLng);
                     //To do: Should assign it to a marker variable
-                    repairMarker = mMap.addMarker(new MarkerOptions().position(technicianLatLng)
+                    repairMarker = mMap.addMarker(new MarkerOptions().position(customerLatLng)
                             .title("Repair Location"));
                     repairMarker.setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.repair_icon));
                 }

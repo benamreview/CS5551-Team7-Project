@@ -53,6 +53,8 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
 
     private boolean LoggedOut;
 
+    private String userID;
+
     private LatLng repairLocation;
     private Marker repairMarker = null;
 
@@ -94,6 +96,8 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
         mRequest = (Button) findViewById(R.id.request);
         mCancel = (Button) findViewById(R.id.cancel);
         mSettings = (Button) findViewById(R.id.settings);
+
+        userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         // Construct a FusedLocationProviderClient.
         // The LocationServices interface is responsible for returning the current location of the device
@@ -231,6 +235,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
 
             }
         });
+        getSessionUpdate();
     }
     //Radius is 1 km
     private int radius = 1;
@@ -329,11 +334,11 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                     //Notification that technician is nearby
                     //Calculate distance
                     float distance = loc1.distanceTo(loc2);
-                    if (distance < 200){
-                        mRequest.setText("Technician is nearby (within 200m)!Please be prepared!");
-                    }
-                    else if (distance <100){
+                    if (distance <100){
                         mRequest.setText("Technician is almost here (within 100m)! Please be prepared!");
+                    }
+                    else if (distance < 200){
+                        mRequest.setText("Technician is nearby (within 200m)!Please be prepared!");
                     }
                     else{
                         mRequest.setText("Technician Found at Location (" + String.valueOf(distance) + " meters) from you");
@@ -351,8 +356,63 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
             }
         });
     }
+    String orderID;
+    private void getSessionUpdate(){
+        final DatabaseReference orderRef= FirebaseDatabase.getInstance().getReference().child("Orders");
+        orderRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot ds: dataSnapshot.getChildren()){
+                    Order order = ds.getValue(Order.class);
+                    String tID = order.getTechnicianID();
+                    String cID = order.getCustomerID();
+                    String status = order.getStatus();
+                    orderID = dataSnapshot.getValue().toString();
+                    if (tID.equals(foundTechnicianID) && cID.equals(userID)){
+                        if (status.equals("ongoing")){
+                            mRequest.setText("Session has started");
+                        }
+                        else if (status.equals("completed")){
+                            mRequest.setText("Session has finished!");
+                            foundTechnicianID = "";
+                        }
+                    }
+                }
+                //If a customer id is found
+                /*if (dataSnapshot.exists()){
+                    String tID = dataSnapshot.getValue();
+                    String cID = dataSnapshot.child("customerID").getValue().toString();
+                    String status = dataSnapshot.child("status").getValue().toString();
+                    orderID = dataSnapshot.getValue().toString();
+                    if (tID.equals(foundTechnicianID) && cID.equals(userID)){
+                        if (status.equals("ongoing")){
+                            mRequest.setText("Session has started");
+                        }
+                        else if (status.equals("completed")){
+                            mRequest.setText("Session has finished!");
+                            foundTechnicianID = "";
+                        }
+                    }
+                }
+                //if the customer cancels the request
+                else {
+                    /*customerID = "";
+                    if (repairMarker!=null){
+                        repairMarker.remove();
+                    }
+                    if (repairLocationRef != null){
+                        repairLocationRef.removeEventListener(repairLocationRefListener);
+                    }*/
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
 
+    }
 
     /**
      * Manipulates the map once available.

@@ -83,8 +83,27 @@
                 android:layout_width="wrap_content"
                 android:layout_height="1dp"
                 android:background="#f9d7db" />
+            <!--<Spinner
+                android:id="@+id/spinner"
+                android:layout_marginLeft="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:ems="10"
+                android:hint="Enter specialization"
+                android:spinnerMode="dropdown"
 
-
+                tools:layout_editor_absoluteX="95dp"
+                tools:layout_editor_absoluteY="293dp"
+                android:drawablePadding="12dp"
+                android:padding="8dp"
+                android:textColorHint="#fff"
+                android:maxLines="1"
+                android:background="@android:color/transparent"></Spinner>
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:background="#f9d7db" />-->
             <EditText
                 android:id="@+id/editTextType"
                 android:layout_marginLeft="20dp"

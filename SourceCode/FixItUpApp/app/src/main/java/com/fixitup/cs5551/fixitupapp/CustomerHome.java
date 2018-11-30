@@ -90,21 +90,24 @@ public class CustomerHome extends AppCompatActivity {
                         //To-be implemented: have a spinner and s
                         list.clear();
                         for(DataSnapshot ds: dataSnapshot.getChildren()){
-                            //String s = dataSnapshot.child("type").getValue().toString();
+
 
                             td = ds.getValue(TechnicianDetails.class);
-                            //  if(s.equalsIgnoreCase(st)) {
-                            // boolean b= st.equalsIgnoreCase(td.getType().toString());
-                            //if(b==true){
-                            list.add(td.getName().toString() + "\n" + td.getEmail().toString() + "\n" + td.getContact().toString() + "\n " + td.getType().toString() + "\n" + td.getZipcode().toString());
-                            //}
+
+                            list.add(td.getName().toString() + "\n" + td.getEmail().toString() + "\n" + td.getContact().toString() + "\n " + td.getType().toString() + "\n" + td.getZipcode().toString()+ "\n" + td.getFee());
+
                         }
                         lv.setAdapter(ad);
                         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                Object o = parent.getItemAtPosition(position);
                                 Intent i = new Intent(CustomerHome.this, CustomerProfile.class);
+                                i.putExtra("name","Jhon");
+                                i.putExtra("email","technician9@gmail.com");
+                                i.putExtra("contact","8167323654");
+                                i.putExtra("fee","$100/hr");
+                                i.putExtra("id","UvvW1QPjeRWZ5ZbSMz0slvwS88U2");
+
                                 startActivity(i);
                             }
                         });

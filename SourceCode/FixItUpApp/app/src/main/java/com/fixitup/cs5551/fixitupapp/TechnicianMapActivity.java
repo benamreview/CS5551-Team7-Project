@@ -287,6 +287,8 @@ public class TechnicianMapActivity extends FragmentActivity implements OnMapRead
                     DatabaseReference orderRef = FirebaseDatabase.getInstance().getReference("Orders").push();
                     orderRef.setValue(order);
                     orderID = orderRef.getKey().toString();
+                    DatabaseReference customerRef= FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child(customerID);
+                    customerRef.child("orderID").setValue(orderID);
                     
                 }
                 else {
@@ -305,7 +307,20 @@ public class TechnicianMapActivity extends FragmentActivity implements OnMapRead
                                     DatabaseReference customerRef= FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child(customerID);
                                     customerRef.child("currentTechnicianID").removeValue();
 
+                                    //Delete customerRequest
+                                    DatabaseReference requestRef = FirebaseDatabase.getInstance().getReference().child("customerRequest").child(customerID);
+                                    requestRef.removeValue();
                                     //Delete requestcustomerID
+                                    DatabaseReference requestCustID= FirebaseDatabase.getInstance().getReference().child("Users").child("Technicians").child(userID).child("requestCustomerID");
+                                    requestCustID.removeValue();
+                                    customerID = "";
+                                    if (repairMarker!=null){
+                                        repairMarker.remove();
+                                    }
+                                    if (repairLocationRef != null){
+                                        repairLocationRef.removeEventListener(repairLocationRefListener);
+                                    }
+
 
                                 }
                             })
@@ -337,6 +352,13 @@ public class TechnicianMapActivity extends FragmentActivity implements OnMapRead
                 //if the customer cancels the request
                 else {
                     customerID = "";
+                    sessionStarted = false;
+                    mNotification.setText("");
+                    mNotification.setVisibility(View.INVISIBLE);
+                    /*if (orderID != null){
+                        DatabaseReference orderRef= FirebaseDatabase.getInstance().getReference().child("Orders").child(orderID);
+                        orderRef.removeValue();
+                    }*/
                     if (repairMarker!=null){
                         repairMarker.remove();
                     }

@@ -194,6 +194,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                 if (orderID != null) {
                     DatabaseReference orderRef = FirebaseDatabase.getInstance().getReference().child("Orders").child(orderID);
                     orderRef.removeValue();
+                    orderID = null;
                 }
                 technicianFound = false;
                 radius = 1; //reset diameter
@@ -406,7 +407,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                             }
                             else if (status.equals("completed")){
                                 //mRequest.setText("Session has finished!");
-                                foundTechnicianID = "";
+
                                 AlertDialog.Builder builder = new AlertDialog.Builder(CustomerMapActivity.this);
                                 builder.setMessage("Session has finished!")
                                         .setPositiveButton("OK!", new DialogInterface.OnClickListener() {
@@ -414,7 +415,16 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                                                 mCancel.performClick();
                                                 //finish();
                                             }
-                                        });
+                                        })
+                                        .setNegativeButton("Rate this technician", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            Intent intent = new Intent(CustomerMapActivity.this, CustomerRatingActivity.class);
+                                            intent.putExtra("tID", foundTechnicianID);
+                                            mCancel.performClick();
+                                            startActivity(intent);
+                                            //finish();
+                                        }
+                                    });
                                 builder.show();
                             }
                         }

@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -43,12 +44,7 @@ public class CustomerProfile extends AppCompatActivity {
        Email.setText(s2);
        Contact.setText(s3);
        Fee.setText(s4);
-       btn.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View v) {
 
-           }
-       });
 
 
 

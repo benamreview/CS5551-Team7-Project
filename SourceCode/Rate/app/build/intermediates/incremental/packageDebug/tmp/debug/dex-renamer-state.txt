@@ -1,0 +1,4 @@
+#Fri Nov 30 22:18:34 CST 2018
+base.0=C\:\\Users\\rishi\\OneDrive\\Documents\\GitHub\\CS5551-Team7-Project\\SourceCode\\Rate\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\0
+path.0=classes.dex
+renamed.0=classes.dex

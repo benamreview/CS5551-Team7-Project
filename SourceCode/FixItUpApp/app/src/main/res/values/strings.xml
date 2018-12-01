@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">FixItUpApp</string>
+    <string name="Open">Navbar</string>
+    <string name="Close">NavBar</string>
     <string name="title_activity_technician_map">Map</string>
     <string name="address_text">"Address: %1$s \n Timestamp: %2$tr"</string>
     <string name="location_permission_denied">Location permissions denied,

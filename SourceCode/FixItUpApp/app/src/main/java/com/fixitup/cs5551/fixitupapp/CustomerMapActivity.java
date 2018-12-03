@@ -44,6 +44,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class CustomerMapActivity extends FragmentActivity implements OnMapReadyCallback, FetchAddressTask.OnTaskCompleted {
     private GoogleMap mMap;
@@ -178,15 +179,21 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
             @Override
             public void onClick(View v) {
                 requestInitiated = false;
+                //Remove location listener
                 if (geoQuery != null){
                     geoQuery.removeAllListeners();
                     technicianRef.removeEventListener(technicianLocationRefListener);
                 }
-
+                //Remove technician
                 if (foundTechnicianID != null){
                     DatabaseReference technicianRef= FirebaseDatabase.getInstance().getReference().child("Users").child("Technicians").child(foundTechnicianID).child("requestCustomerID");
                     technicianRef.removeValue();
                     foundTechnicianID = null;
+                }
+                //Remove order
+                if (orderID != null) {
+                    DatabaseReference orderRef = FirebaseDatabase.getInstance().getReference().child("Orders").child(orderID);
+                    orderRef.removeValue();
                 }
                 technicianFound = false;
                 radius = 1; //reset diameter
@@ -207,7 +214,13 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                         //Do some stuff if you want to
                     }
                 });
-
+                //Remove orderID from customer and the order from Orders if applicable
+                if (orderID!=null && orderID!=""){
+                    DatabaseReference orderIDRef = FirebaseDatabase.getInstance().getReference("Users").child("Customers").child(userID).child("orderID");
+                    orderIDRef.removeValue();
+                    DatabaseReference orderRef = FirebaseDatabase.getInstance().getReference("Orders").child(orderID);
+                    orderRef.removeValue();
+                }
 
                 mRequest.setText("Request a Technician");
                 mCancel.setVisibility(View.INVISIBLE);
@@ -235,7 +248,8 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
 
             }
         });
-        getSessionUpdate();
+        getOrderID();
+        //getOrderUpdate();
     }
     //Radius is 1 km
     private int radius = 1;
@@ -356,53 +370,17 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
             }
         });
     }
-    String orderID;
-    private void getSessionUpdate(){
-        final DatabaseReference orderRef= FirebaseDatabase.getInstance().getReference().child("Orders");
-        orderRef.addValueEventListener(new ValueEventListener() {
+    String orderID = "";
+    private void getOrderID() {
+
+        final DatabaseReference orderIDref = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child(userID).child("orderID");
+        orderIDref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot ds: dataSnapshot.getChildren()){
-                    Order order = ds.getValue(Order.class);
-                    String tID = order.getTechnicianID();
-                    String cID = order.getCustomerID();
-                    String status = order.getStatus();
+                if (dataSnapshot.getValue() != null) {
                     orderID = dataSnapshot.getValue().toString();
-                    if (tID.equals(foundTechnicianID) && cID.equals(userID)){
-                        if (status.equals("ongoing")){
-                            mRequest.setText("Session has started");
-                        }
-                        else if (status.equals("completed")){
-                            mRequest.setText("Session has finished!");
-                            foundTechnicianID = "";
-                        }
-                    }
                 }
-                //If a customer id is found
-                /*if (dataSnapshot.exists()){
-                    String tID = dataSnapshot.getValue();
-                    String cID = dataSnapshot.child("customerID").getValue().toString();
-                    String status = dataSnapshot.child("status").getValue().toString();
-                    orderID = dataSnapshot.getValue().toString();
-                    if (tID.equals(foundTechnicianID) && cID.equals(userID)){
-                        if (status.equals("ongoing")){
-                            mRequest.setText("Session has started");
-                        }
-                        else if (status.equals("completed")){
-                            mRequest.setText("Session has finished!");
-                            foundTechnicianID = "";
-                        }
-                    }
-                }
-                //if the customer cancels the request
-                else {
-                    /*customerID = "";
-                    if (repairMarker!=null){
-                        repairMarker.remove();
-                    }
-                    if (repairLocationRef != null){
-                        repairLocationRef.removeEventListener(repairLocationRefListener);
-                    }*/
+                getOrderUpdate();
             }
 
             @Override
@@ -410,9 +388,47 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
 
             }
         });
-
-
     }
+    private void getOrderUpdate(){
+        final DatabaseReference orderRef= FirebaseDatabase.getInstance().getReference().child("Orders").child(orderID);
+        orderRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()){
+                        Order order = dataSnapshot.getValue(Order.class);
+                        String tID = order.getTechnicianID();
+                        String cID = order.getCustomerID();
+                        String status = order.getStatus();
+                        orderID = dataSnapshot.getValue().toString();
+                        if (tID.equals(foundTechnicianID) && cID.equals(userID)){
+                            if (status.equals("ongoing")){
+                                mRequest.setText("Session has started");
+                            }
+                            else if (status.equals("completed")){
+                                //mRequest.setText("Session has finished!");
+                                foundTechnicianID = "";
+                                AlertDialog.Builder builder = new AlertDialog.Builder(CustomerMapActivity.this);
+                                builder.setMessage("Session has finished!")
+                                        .setPositiveButton("OK!", new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int id) {
+                                                mCancel.performClick();
+                                                //finish();
+                                            }
+                                        });
+                                builder.show();
+                            }
+                        }
+                    }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
 
     /**
      * Manipulates the map once available.

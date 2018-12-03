@@ -97,7 +97,7 @@ public class TechnicianMapActivity extends FragmentActivity implements OnMapRead
     }
 
     //Declare customerID
-    private String customerID = "";
+    private String customerID = "", lastCustomerID;
     private String userID, orderID = null;;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -165,6 +165,7 @@ public class TechnicianMapActivity extends FragmentActivity implements OnMapRead
                         break;
                     default:
                         //Technician is now assigned
+                        lastCustomerID=customerID; //for rating
                         geoFireAvailable.removeLocation(userID, new GeoFire.CompletionListener(){
                             @Override
                             public void onComplete(String key, DatabaseError error) {
@@ -278,6 +279,7 @@ public class TechnicianMapActivity extends FragmentActivity implements OnMapRead
         mNotification.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //To Start a session
                 if (!sessionStarted){
                     sessionStarted=true;
                     mNotification.setVisibility(View.VISIBLE);
@@ -291,6 +293,8 @@ public class TechnicianMapActivity extends FragmentActivity implements OnMapRead
                     customerRef.child("orderID").setValue(orderID);
                     
                 }
+
+                //To finish a session
                 else {
                     AlertDialog.Builder builder = new AlertDialog.Builder(TechnicianMapActivity.this);
                     builder.setMessage(R.string.warning_msg4)
@@ -303,25 +307,38 @@ public class TechnicianMapActivity extends FragmentActivity implements OnMapRead
                                     DatabaseReference orderRef = FirebaseDatabase.getInstance().getReference("Orders").child(orderID);
                                     orderRef.child("status").setValue("completed");
 
-                                    //Delete technicianID out of customerID
-                                    DatabaseReference customerRef= FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child(customerID);
-                                    customerRef.child("currentTechnicianID").removeValue();
 
                                     //Delete customerRequest
                                     DatabaseReference requestRef = FirebaseDatabase.getInstance().getReference().child("customerRequest").child(customerID);
                                     requestRef.removeValue();
+
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(TechnicianMapActivity.this);
+                                    builder.setMessage("Would you like to rate this customer?")
+                                            .setPositiveButton("Yes!", new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int id) {
+                                                    Intent intent = new Intent(TechnicianMapActivity.this, TechnicianRatingActivity.class);
+                                                    intent.putExtra("cID", lastCustomerID);
+                                                    startActivity(intent);
+                                                    //finish();
+                                                }
+                                            })
+                                            .setNegativeButton("No!", new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int id) {
+                                                }
+                                            });
+                                    builder.show();
                                     //Delete requestcustomerID
                                     DatabaseReference requestCustID= FirebaseDatabase.getInstance().getReference().child("Users").child("Technicians").child(userID).child("requestCustomerID");
                                     requestCustID.removeValue();
-                                    customerID = "";
+
+
+                                    //remove markers on the map
                                     if (repairMarker!=null){
                                         repairMarker.remove();
                                     }
                                     if (repairLocationRef != null){
                                         repairLocationRef.removeEventListener(repairLocationRefListener);
                                     }
-
-
                                 }
                             })
                             .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

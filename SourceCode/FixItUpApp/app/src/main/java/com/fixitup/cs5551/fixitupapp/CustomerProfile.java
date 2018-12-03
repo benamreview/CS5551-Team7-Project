@@ -19,6 +19,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.StringTokenizer;
 
 public class CustomerProfile extends AppCompatActivity {
 
@@ -31,7 +32,19 @@ public class CustomerProfile extends AppCompatActivity {
        name=(TextView)findViewById(R.id.name);
        btn=(Button)findViewById(R.id.book);
        Intent intent=getIntent();
-       String techname = intent.getStringExtra("Name");
+       String techname = intent.getStringExtra("tech");
+       StringTokenizer str = new StringTokenizer(techname);
+       for(int i=1; str.hasMoreTokens(); i++){
+
+          }
+
+       name.setText(techname);
+       btn.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+
+           }
+       });
     }
 
 

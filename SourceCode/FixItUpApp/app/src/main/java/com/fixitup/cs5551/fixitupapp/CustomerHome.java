@@ -105,6 +105,8 @@ public class CustomerHome extends AppCompatActivity {
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                                 Object o = parent.getItemAtPosition(position);
                                 Intent i = new Intent(CustomerHome.this, CustomerProfile.class);
+                                String s1= o.toString();
+                                i.putExtra("tech",s1);
                                 startActivity(i);
                             }
                         });

@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -22,16 +23,31 @@ import java.util.ArrayList;
 
 public class CustomerProfile extends AppCompatActivity {
 
-    TextView name;
+    TextView Name,Email,Contact,Fee;
     Button btn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_customer_profile);
-       name=(TextView)findViewById(R.id.name);
+       Name=(TextView)findViewById(R.id.name);
+       Email=(TextView)findViewById(R.id.email);
+        Contact=(TextView)findViewById(R.id.contact);
+        Fee=(TextView)findViewById(R.id.fee);
        btn=(Button)findViewById(R.id.book);
        Intent intent=getIntent();
-       String techname = intent.getStringExtra("Name");
+       String s1 = intent.getStringExtra("name");
+       String s2 = intent.getStringExtra("email");
+        String s3 = intent.getStringExtra("contact");
+        String s4 = intent.getStringExtra("fee");
+        String s5 = intent.getStringExtra("id");
+       Name.setText(s1);
+       Email.setText(s2);
+       Contact.setText(s3);
+       Fee.setText(s4);
+
+
+
+
     }
 
 

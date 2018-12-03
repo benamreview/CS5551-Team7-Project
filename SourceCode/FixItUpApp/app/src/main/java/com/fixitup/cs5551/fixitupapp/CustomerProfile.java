@@ -23,27 +23,18 @@ import java.util.ArrayList;
 
 public class CustomerProfile extends AppCompatActivity {
 
-    TextView Name,Email,Contact,Fee;
+    TextView Name;
     Button btn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_customer_profile);
        Name=(TextView)findViewById(R.id.name);
-       Email=(TextView)findViewById(R.id.email);
-        Contact=(TextView)findViewById(R.id.contact);
-        Fee=(TextView)findViewById(R.id.fee);
+
        btn=(Button)findViewById(R.id.book);
        Intent intent=getIntent();
-       String s1 = intent.getStringExtra("name");
-       String s2 = intent.getStringExtra("email");
-        String s3 = intent.getStringExtra("contact");
-        String s4 = intent.getStringExtra("fee");
-        String s5 = intent.getStringExtra("id");
-       Name.setText(s1);
-       Email.setText(s2);
-       Contact.setText(s3);
-       Fee.setText(s4);
+        String s=intent.getStringExtra("tech");
+        Name.setText(s);
 
 
 

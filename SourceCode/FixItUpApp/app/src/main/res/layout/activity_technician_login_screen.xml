@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".TechnicianLoginScreenActivity">
+    tools:context=".TechnicianLoginScreenActivity"
+    android:background="@drawable/new_login_gradients">
 
     <Button
         android:id="@+id/signInBtn"
@@ -13,7 +14,13 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="136dp"
-        android:text="Sign In" />
+        android:text="Sign In"
+        android:background="@drawable/background_login"
+        android:textColor="#f16f7d"
+        android:textAllCaps="false"
+        android:padding="16dp"
+        android:clickable="true"
+        style="@style/Base.TextAppearance.AppCompat.Body1"/>
 
     <Button
         android:id="@+id/signUpBtn"
@@ -22,7 +29,13 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="233dp"
-        android:text="Sign Up" />
+        android:text="Sign Up"
+        android:background="@drawable/background_login"
+        android:textColor="#f16f7d"
+        android:textAllCaps="false"
+        android:padding="16dp"
+        android:clickable="true"
+        style="@style/Base.TextAppearance.AppCompat.Body1"/>
 
     <TextView
         android:id="@+id/textView"

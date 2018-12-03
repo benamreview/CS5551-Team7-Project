@@ -101,14 +101,11 @@ public class CustomerHome extends AppCompatActivity {
                         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                Object o =parent.getItemAtPosition(position);
                                 Intent i = new Intent(CustomerHome.this, CustomerProfile.class);
-                                i.putExtra("name","Jhon");
-                                i.putExtra("email","technician9@gmail.com");
-                                i.putExtra("contact","8167323654");
-                                i.putExtra("fee","$100/hr");
-                                i.putExtra("id","UvvW1QPjeRWZ5ZbSMz0slvwS88U2");
-
-                                startActivity(i);
+                               String s1=o.toString();
+                               i.putExtra("tech",s1);
+                               startActivity(i);
                             }
                         });
                     }

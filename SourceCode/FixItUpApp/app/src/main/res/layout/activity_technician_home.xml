@@ -44,18 +44,26 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"></ListView>
         <TextView
+            android:id="@+id/textViewDemo"
+            android:layout_alignParentTop="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"/>
+            />
+        <TextView
             android:id="@+id/textView8"
             android:layout_width="wrap_content"
             android:layout_height="38dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginTop="18dp"
-            android:layout_marginEnd="82dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginEnd="70dp"
             android:hint="@string/hint1"
             android:textFontWeight="400"
             android:text="Welcome to"
             android:textStyle="bold"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:gravity = "center"/>
 
         <TextView
             android:id="@+id/textView9"

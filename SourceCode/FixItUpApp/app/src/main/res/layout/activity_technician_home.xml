@@ -20,6 +20,16 @@
         android:layout_height="100sp"
         android:id = "@+id/profileImg"
         android:src = "@mipmap/ic_default_user"/>
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="14dp"
+            android:layout_marginEnd="23dp"
+            android:textSize="25dp"
+            />
     <ListView
         android:id="@+id/listView"
         android:layout_width="wrap_content"
@@ -30,22 +40,6 @@
         android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"></ListView>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="visible">
-
-        <Button
-            android:id="@+id/mapBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:textAlignment="center"
-            android:gravity="center"
-            android:layout_marginStart="0dp"
-            android:layout_marginTop="130dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"></ListView>
 
 
 </RelativeLayout>

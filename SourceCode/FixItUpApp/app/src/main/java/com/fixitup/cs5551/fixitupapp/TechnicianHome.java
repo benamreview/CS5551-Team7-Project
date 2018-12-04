@@ -19,6 +19,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -39,6 +40,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,11 +61,14 @@ public class TechnicianHome extends AppCompatActivity {
 
     private ActionBarDrawerToggle abdt;
 
+    private TextView mDate;
+
     private DatabaseReference mTechnicianDatabase;
     DatabaseReference dbr;
     TechnicianDetails td;
     ArrayList<String> list;
     ArrayAdapter<String> ad;
+    Thread thread;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,18 +120,28 @@ public class TechnicianHome extends AppCompatActivity {
                 return true;
             }
         });
+        mDate = (TextView) findViewById(R.id.date);
+        thread = new Thread() {
 
+            @Override
+            public void run() {
+                try {
+                    while (!thread.isInterrupted()) {
+                        Thread.sleep(1000);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                // update TextView here!
+                                mDate.setText(Calendar.getInstance().getTime().toString());
+                            }
+                        });
+                    }
+                } catch (InterruptedException e) {
+                }
+            }
+        };
 
-
-
-
-
-
-
-
-
-
-
+        thread.start();
 
 
         mProfileImage = (ImageView) findViewById(R.id.profileImg);

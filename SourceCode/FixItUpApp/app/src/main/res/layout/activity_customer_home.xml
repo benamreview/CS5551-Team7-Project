@@ -59,7 +59,7 @@
                 android:layout_marginTop="68dp"
                 android:layout_marginEnd="95dp"
                 android:background="@drawable/background_login"
-                android:textColor="#f16f7d"
+                android:textColor="#101010"
                 android:textAllCaps="false"
                 android:hint="Search" />
 

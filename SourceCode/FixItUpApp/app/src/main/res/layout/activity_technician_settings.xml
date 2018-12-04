@@ -33,14 +33,14 @@
                 tools:layout_editor_absoluteY="30dp"
                 android:drawablePadding="12dp"
                 android:padding="8dp"
-                android:textColorHint="#fff"
+                android:textColorHint="#151414"
                 android:maxLines="1"
                 android:background="@android:color/transparent"
                 android:layout_marginTop="70dp"/>
             <View
                 android:layout_width="wrap_content"
                 android:layout_height="1dp"
-                android:background="#f9d7db" />
+                android:background="#151414" />
 
             <EditText
                 android:id="@+id/editTextConatact"
@@ -54,14 +54,14 @@
                 tools:layout_editor_absoluteY="30dp"
                 android:drawablePadding="12dp"
                 android:padding="8dp"
-                android:textColorHint="#fff"
+                android:textColorHint="#151414"
                 android:maxLines="1"
                 android:background="@android:color/transparent"
                 android:layout_marginTop="10dp"/>
             <View
                 android:layout_width="wrap_content"
                 android:layout_height="1dp"
-                android:background="#f9d7db" />
+                android:background="#151414" />
 
             <EditText
                 android:id="@+id/editTextZip"
@@ -76,13 +76,13 @@
                 tools:layout_editor_absoluteY="211dp"
                 android:drawablePadding="12dp"
                 android:padding="8dp"
-                android:textColorHint="#fff"
+                android:textColorHint="#151414"
                 android:maxLines="1"
                 android:background="@android:color/transparent"/>
             <View
                 android:layout_width="wrap_content"
                 android:layout_height="1dp"
-                android:background="#f9d7db" />
+                android:background="#151414" />
 
 
             <EditText
@@ -98,13 +98,13 @@
                 tools:layout_editor_absoluteY="293dp"
                 android:drawablePadding="12dp"
                 android:padding="8dp"
-                android:textColorHint="#fff"
+                android:textColorHint="#131212"
                 android:maxLines="1"
                 android:background="@android:color/transparent"/>
             <View
                 android:layout_width="wrap_content"
                 android:layout_height="1dp"
-                android:background="#f9d7db" />
+                android:background="#181717" />
             <EditText
                 android:id="@+id/editTextCharge"
                 android:layout_width="wrap_content"
@@ -117,14 +117,14 @@
                 tools:layout_editor_absoluteY="30dp"
                 android:drawablePadding="12dp"
                 android:padding="8dp"
-                android:textColorHint="#fff"
+                android:textColorHint="#100f0f"
                 android:maxLines="1"
                 android:background="@android:color/transparent"
                 android:layout_marginTop="10dp"/>
             <View
                 android:layout_width="wrap_content"
                 android:layout_height="1dp"
-                android:background="#f9d7db" />
+                android:background="#151414" />
             <Button
                 android:id="@+id/detailButton"
                 style="@style/Base.TextAppearance.AppCompat.Body1"
@@ -139,8 +139,9 @@
                 android:text="CONFIRM CHANGES"
                 android:textAllCaps="false"
                 android:textAppearance="@style/TextAppearance.AppCompat.Button"
-                android:textColor="#f16f7d"
-                android:textSize="15sp" />
+                android:textColor="#151414"
+                android:textSize="15sp"
+                android:textFontWeight="400"/>
 
             <Button
                 android:id="@+id/back"
@@ -156,8 +157,9 @@
                 android:text="BACK"
                 android:textAllCaps="false"
                 android:textAppearance="@style/TextAppearance.AppCompat.Button"
-                android:textColor="#f16f7d"
-                android:textSize="18sp" />
+                android:textColor="#121111"
+                android:textSize="18sp"
+                android:textFontWeight="400"/>
         </LinearLayout>
     </ScrollView>
 

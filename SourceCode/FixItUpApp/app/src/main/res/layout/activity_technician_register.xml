@@ -33,14 +33,14 @@
                 tools:layout_editor_absoluteY="30dp"
                 android:drawablePadding="12dp"
                 android:padding="8dp"
-                android:textColorHint="#fff"
+                android:textColorHint="#1b1a1a"
                 android:maxLines="1"
                 android:background="@android:color/transparent"
                 android:layout_marginTop="70dp"/>
             <View
                 android:layout_width="wrap_content"
                 android:layout_height="1dp"
-                android:background="#f9d7db" />
+                android:background="#161616" />
 
             <EditText
                 android:id="@+id/editTextConatact"
@@ -54,14 +54,14 @@
                 tools:layout_editor_absoluteY="30dp"
                 android:drawablePadding="12dp"
                 android:padding="8dp"
-                android:textColorHint="#fff"
+                android:textColorHint="#0e0e0e"
                 android:maxLines="1"
                 android:background="@android:color/transparent"
                 android:layout_marginTop="10dp"/>
             <View
                 android:layout_width="wrap_content"
                 android:layout_height="1dp"
-                android:background="#f9d7db" />
+                android:background="#151414" />
 
     <EditText
         android:id="@+id/editTextZip"
@@ -76,13 +76,13 @@
         tools:layout_editor_absoluteY="211dp"
         android:drawablePadding="12dp"
         android:padding="8dp"
-        android:textColorHint="#fff"
+        android:textColorHint="#1a1919"
         android:maxLines="1"
         android:background="@android:color/transparent"/>
             <View
                 android:layout_width="wrap_content"
                 android:layout_height="1dp"
-                android:background="#f9d7db" />
+                android:background="#1a1919" />
 
 
             <EditText
@@ -98,13 +98,13 @@
                 tools:layout_editor_absoluteY="293dp"
                 android:drawablePadding="12dp"
                 android:padding="8dp"
-                android:textColorHint="#fff"
+                android:textColorHint="#1b1a1a"
                 android:maxLines="1"
                 android:background="@android:color/transparent"/>
             <View
                 android:layout_width="wrap_content"
                 android:layout_height="1dp"
-                android:background="#f9d7db" />
+                android:background="#1d1c1c" />
             <EditText
                 android:id="@+id/editTextCharge"
                 android:layout_width="wrap_content"
@@ -117,14 +117,14 @@
                 tools:layout_editor_absoluteY="30dp"
                 android:drawablePadding="12dp"
                 android:padding="8dp"
-                android:textColorHint="#fff"
+                android:textColorHint="#131313"
                 android:maxLines="1"
                 android:background="@android:color/transparent"
                 android:layout_marginTop="10dp"/>
             <View
                 android:layout_width="wrap_content"
                 android:layout_height="1dp"
-                android:background="#f9d7db" />
+                android:background="#1b1b1b" />
 
             <View
                 android:layout_width="wrap_content"
@@ -140,7 +140,7 @@
                 android:text="Add Details"
                 android:textAppearance="@style/TextAppearance.AppCompat.Button"
                 android:background="@drawable/background_login"
-                android:textColor="#f16f7d"
+                android:textColor="#181717"
                 android:textAllCaps="false"
                 android:padding="16dp"
                 android:clickable="true"

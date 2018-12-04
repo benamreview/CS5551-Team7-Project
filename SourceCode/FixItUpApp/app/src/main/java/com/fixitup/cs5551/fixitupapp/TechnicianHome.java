@@ -64,10 +64,6 @@ public class TechnicianHome extends AppCompatActivity {
     private TextView mDate;
 
     private DatabaseReference mTechnicianDatabase;
-    DatabaseReference dbr;
-    TechnicianDetails td;
-    ArrayList<String> list;
-    ArrayAdapter<String> ad;
     Thread thread;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +92,7 @@ public class TechnicianHome extends AppCompatActivity {
                         FirebaseAuth.getInstance().signOut();
                         Intent intent = new Intent(TechnicianHome.this, MainActivity.class);
                         startActivity(intent);
+                        finish();
                          Toast.makeText(TechnicianHome.this, "logout", Toast.LENGTH_SHORT);
                     }
                 }
@@ -147,28 +144,6 @@ public class TechnicianHome extends AppCompatActivity {
         mProfileImage = (ImageView) findViewById(R.id.profileImg);
         userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
         mTechnicianDatabase= FirebaseDatabase.getInstance().getReference().child("Users").child("Technicians").child(userID);
-
-        dbr = FirebaseDatabase.getInstance().getReference().child("Users").child("Technicians");
-        lv = (ListView)findViewById(R.id.listView);
-        td = new TechnicianDetails();
-        list = new ArrayList<>();
-        ad = new ArrayAdapter<String>(this, R.layout.list_layout, R.id.technician, list);
-        dbr.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                //To-be implemented: have a spinner and s
-                for(DataSnapshot ds: dataSnapshot.getChildren()){
-                    td = ds.getValue(TechnicianDetails.class);
-                    list.add(td.getName().toString()+"\n"+td.getEmail().toString()+"\n"+td.getContact().toString()+"\n "+td.getType().toString()+"\n"+td.getZipcode().toString());
-                }
-                lv.setAdapter(ad);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
         //Map Btn
         //To-be-implemented: Display map on this screen.
        // mMapBtn = (Button) findViewById(R.id.mapBtn);

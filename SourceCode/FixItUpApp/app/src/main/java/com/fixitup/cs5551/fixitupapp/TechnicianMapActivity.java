@@ -319,7 +319,7 @@ public class TechnicianMapActivity extends FragmentActivity implements OnMapRead
                                                     Intent intent = new Intent(TechnicianMapActivity.this, TechnicianRatingActivity.class);
                                                     intent.putExtra("cID", lastCustomerID);
                                                     startActivity(intent);
-                                                    //finish();
+                                                    finish();
                                                 }
                                             })
                                             .setNegativeButton("No!", new DialogInterface.OnClickListener() {

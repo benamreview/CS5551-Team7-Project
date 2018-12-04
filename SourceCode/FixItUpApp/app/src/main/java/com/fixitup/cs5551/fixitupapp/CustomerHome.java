@@ -95,12 +95,11 @@ public class CustomerHome extends AppCompatActivity {
 
                 if(id == R.id.logout_cust)
                 {
-                    {
                     FirebaseAuth.getInstance().signOut();
                     Intent intent = new Intent(CustomerHome.this, MainActivity.class);
                     startActivity(intent);
                    Toast.makeText(CustomerHome.this, "logout", Toast.LENGTH_SHORT);
-                }
+                        finish();
                 }
 
                 if(id == R.id.maps)
@@ -118,8 +117,6 @@ public class CustomerHome extends AppCompatActivity {
                     finish();
                     Toast.makeText(CustomerHome.this, "setting",Toast.LENGTH_SHORT);
                 }
-
-
                 return true;
             }
         });

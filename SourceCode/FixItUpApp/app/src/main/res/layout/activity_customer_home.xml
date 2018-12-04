@@ -27,7 +27,7 @@
         android:layout_height="match_parent"
         android:textAlignment="center"
         android:gravity="center"
-        android:layout_marginStart="0dp"
+        android:layout_marginStart="30dp"
         android:layout_marginTop="130dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"></ListView>
@@ -59,7 +59,7 @@
                 android:layout_marginTop="68dp"
                 android:layout_marginEnd="95dp"
                 android:background="@drawable/background_login"
-                android:textColor="#101010"
+                android:textColor="#f16f7d"
                 android:textAllCaps="false"
                 android:hint="Search" />
 

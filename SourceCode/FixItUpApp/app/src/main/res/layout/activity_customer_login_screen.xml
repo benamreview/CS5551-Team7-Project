@@ -19,6 +19,7 @@
         android:textAllCaps="false"
         android:padding="16dp"
         android:clickable="true"
+        android:textStyle="bold"
         android:textColor="#0c0910"
         android:textSize="18dp"
         style="@style/Base.TextAppearance.AppCompat.Body1"/>
@@ -34,6 +35,7 @@
         android:background="@drawable/background_login"
         android:textColor="#0c0910"
         android:textAllCaps="false"
+        android:textStyle="bold"
         android:padding="16dp"
         android:clickable="true"
         android:textSize="18dp"
@@ -45,6 +47,7 @@
         android:layout_height="58dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
+        android:textStyle="bold"
         android:layout_marginTop="42dp"
         android:text="Welcome to our FixitUp's Customer Base! \nPlease sign in or create a new account!"
         android:textSize="18dp"

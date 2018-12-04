@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".CustomerProfile">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        tools:context=".CustomerProfile">
    <TextView
        android:layout_width="wrap_content"
        android:layout_height="match_parent"
@@ -15,4 +21,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-</android.support.constraint.ConstraintLayout>
+    </RelativeLayout>
+    <android.support.design.widget.NavigationView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:id="@+id/nav_bar"
+        android:layout_gravity="start"
+        app:headerLayout="@layout/navigation_header"
+        app:menu="@menu/navigation_menu">
+        
+    </android.support.design.widget.NavigationView>
+</android.support.v4.widget.DrawerLayout>

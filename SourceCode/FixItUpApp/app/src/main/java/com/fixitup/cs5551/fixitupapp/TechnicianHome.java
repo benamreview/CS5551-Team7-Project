@@ -94,7 +94,7 @@ public class TechnicianHome extends AppCompatActivity {
                 {
                     {
                         FirebaseAuth.getInstance().signOut();
-                        Intent intent = new Intent(TechnicianHome.this, TechnicianSettingsActivity.class);
+                        Intent intent = new Intent(TechnicianHome.this, MainActivity.class);
                         startActivity(intent);
                          Toast.makeText(TechnicianHome.this, "logout", Toast.LENGTH_SHORT);
                     }

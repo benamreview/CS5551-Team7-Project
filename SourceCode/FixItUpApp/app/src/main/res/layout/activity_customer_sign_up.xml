@@ -28,15 +28,15 @@
                 android:ems="10"
                 android:drawablePadding="12dp"
                 android:padding="8dp"
-                android:textColorHint="#fff"
+                android:textColorHint="#151414"
                 android:maxLines="1"
                 android:background="@android:color/transparent"
-                android:layout_marginTop="70dp"/>
+                android:layout_marginTop="100dp"/>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#f9d7db" />
+                android:background="#151414" />
 
             <EditText
                 android:layout_width="match_parent"
@@ -47,14 +47,14 @@
                 android:ems="10"
                 android:drawablePadding="12dp"
                 android:padding="8dp"
-                android:textColorHint="#fff"
+                android:textColorHint="#1a1919"
                 android:maxLines="1"
                 android:background="@android:color/transparent"
-                android:layout_marginTop="4dp"/>
+                android:layout_marginTop="15dp"/>
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#f9d7db" />
+                android:background="#1b1a1a" />
 
             <Button
                 android:layout_width="match_parent"
@@ -63,12 +63,13 @@
                 android:id = "@+id/registration"
                 android:background="@drawable/background_signup"
                 style="@style/Base.TextAppearance.AppCompat.Body1"
-                android:textColor="#f16f7d"
+                android:textColor="#1a1919"
                 android:textAllCaps="false"
                 android:textSize="18sp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="25dp"
                 android:clickable="true"
-                android:padding="16dp"/>
+                android:padding="18dp"
+                android:textFontWeight="400"/>
         </LinearLayout>
     </ScrollView>
 

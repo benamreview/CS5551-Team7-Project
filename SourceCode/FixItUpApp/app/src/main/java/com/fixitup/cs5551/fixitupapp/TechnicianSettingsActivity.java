@@ -67,8 +67,7 @@ public class TechnicianSettingsActivity extends AppCompatActivity {
                     }
                 }
             }
-            //For tomorrow: add logic for confirm and back button
-            //Add fee and calculation (if possible)
+
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {

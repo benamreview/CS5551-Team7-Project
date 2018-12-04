@@ -32,14 +32,14 @@
         tools:layout_editor_absoluteY="30dp"
         android:drawablePadding="12dp"
         android:padding="8dp"
-        android:textColorHint="#fff"
+        android:textColorHint="#212020"
         android:maxLines="1"
         android:background="@android:color/transparent"
         android:layout_marginTop="70dp"/>
             <View
                 android:layout_width="wrap_content"
                 android:layout_height="1dp"
-                android:background="#f9d7db" />
+                android:background="#1a1919" />
 
     <EditText
         android:id="@+id/editTextConatact"
@@ -53,14 +53,14 @@
         tools:layout_editor_absoluteY="30dp"
         android:drawablePadding="12dp"
         android:padding="8dp"
-        android:textColorHint="#fff"
+        android:textColorHint="#1e1d1d"
         android:maxLines="1"
         android:background="@android:color/transparent"
         android:layout_marginTop="10dp"/>
             <View
                 android:layout_width="wrap_content"
                 android:layout_height="1dp"
-                android:background="#f9d7db" />
+                android:background="#161616" />
 
     <EditText
         android:id="@+id/editTextZip"
@@ -75,13 +75,13 @@
         tools:layout_editor_absoluteY="211dp"
         android:drawablePadding="12dp"
         android:padding="8dp"
-        android:textColorHint="#fff"
+        android:textColorHint="#151414"
         android:maxLines="1"
         android:background="@android:color/transparent" />
             <View
                 android:layout_width="wrap_content"
                 android:layout_height="1dp"
-                android:background="#f9d7db" />
+                android:background="#161616" />
 
     <Button
         android:id="@+id/detailButton"
@@ -92,7 +92,7 @@
         android:text="Add Details"
         android:textAppearance="@style/TextAppearance.AppCompat.Button"
         android:background="@drawable/background_login"
-        android:textColor="#f16f7d"
+        android:textColor="#1a1919"
         android:textAllCaps="false"
         android:padding="16dp"
         android:clickable="true"

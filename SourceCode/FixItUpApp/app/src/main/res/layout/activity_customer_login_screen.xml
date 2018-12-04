@@ -16,10 +16,11 @@
         android:layout_marginTop="136dp"
         android:text="Sign In"
         android:background="@drawable/background_login"
-        android:textColor="#f16f7d"
         android:textAllCaps="false"
         android:padding="16dp"
         android:clickable="true"
+        android:textColor="#0c0910"
+        android:textSize="18dp"
         style="@style/Base.TextAppearance.AppCompat.Body1"/>
 
     <Button
@@ -31,10 +32,11 @@
         android:layout_marginTop="233dp"
         android:text="Sign Up"
         android:background="@drawable/background_login"
-        android:textColor="#f16f7d"
+        android:textColor="#0c0910"
         android:textAllCaps="false"
         android:padding="16dp"
         android:clickable="true"
+        android:textSize="18dp"
         style="@style/Base.TextAppearance.AppCompat.Body1"/>
 
     <TextView
@@ -45,7 +47,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="42dp"
         android:text="Welcome to our FixitUp's Customer Base! \nPlease sign in or create a new account!"
-        android:textSize="17dp"
+        android:textSize="18dp"
         android:visibility="visible"
         tools:text="Welcome to our FixitUp's Customer Base! \nPlease sign in or create a new account!" />
 </RelativeLayout>

@@ -27,7 +27,7 @@ public class CustomerRatingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_customer_rating);
-
+        mRatingNum = "5";
         mRatingBar = (RatingBar) findViewById(R.id.ratingBar);
         mRatingScale = (TextView) findViewById(R.id.tvRatingScale);
         mFeedback = (EditText) findViewById(R.id.etFeedback);

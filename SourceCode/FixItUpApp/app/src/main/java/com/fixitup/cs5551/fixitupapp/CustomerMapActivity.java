@@ -120,6 +120,12 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                     currentLocationMarker.setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.mappin_icon));
                     currentLocationMarker.setSnippet("Latitude: " + mLastKnownLocation.getLatitude() + ", Longitude:" + mLastKnownLocation.getLongitude());
                 }
+                //Direct from CustomerProfile Activity
+                Intent intent = getIntent();
+                if (intent.getStringExtra("requested").equals("true")){
+                    mRequest.performClick();
+                    intent.putExtra("requested", "false");
+                }
             }
         };
         //Create Logout Button
@@ -250,7 +256,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
             }
         });
         getOrderID();
-        //getOrderUpdate();
+
     }
     //Radius is 1 km
     private int radius = 1;

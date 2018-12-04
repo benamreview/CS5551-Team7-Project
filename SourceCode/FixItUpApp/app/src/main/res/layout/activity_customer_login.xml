@@ -33,6 +33,7 @@
                 android:inputType="textEmailAddress"
                 android:maxLines="1"
                 android:padding="8dp"
+                android:textStyle="bold"
                 android:textColorHint="#252323" />
 
             <View
@@ -49,6 +50,7 @@
                 android:drawablePadding="12dp"
                 android:ems="10"
                 android:hint="Password"
+                android:textStyle="bold"
                 android:inputType="textPassword"
                 android:maxLines="1"
                 android:padding="8dp"
@@ -70,6 +72,7 @@
                 android:padding="16dp"
                 android:text="Login"
                 android:textAllCaps="false"
+                android:textStyle="bold"
                 android:textColor="#0c0910"
                 android:textFontWeight="400"
                 android:textSize="18sp" />

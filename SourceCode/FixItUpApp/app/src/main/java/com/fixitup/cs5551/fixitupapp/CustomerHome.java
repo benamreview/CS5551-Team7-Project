@@ -99,7 +99,7 @@ public class CustomerHome extends AppCompatActivity {
                     FirebaseAuth.getInstance().signOut();
                     Intent intent = new Intent(CustomerHome.this, MainActivity.class);
                     startActivity(intent);
-                   // Toast.makeText(CustomerHome.this, "logout", Toast.LENGTH_SHORT);
+                   Toast.makeText(CustomerHome.this, "logout", Toast.LENGTH_SHORT);
                 }
                 }
 
@@ -108,7 +108,7 @@ public class CustomerHome extends AppCompatActivity {
                     Intent intent = new Intent(CustomerHome.this, CustomerMapActivity.class);
                     startActivity(intent);
                     finish();
-                   // Toast.makeText(CustomerHome.this, "map",Toast.LENGTH_SHORT);
+                   Toast.makeText(CustomerHome.this, "map",Toast.LENGTH_SHORT);
                 }
 
                 if(id == R.id.settings_cust)
@@ -116,7 +116,7 @@ public class CustomerHome extends AppCompatActivity {
                     Intent intent = new Intent(CustomerHome.this, CustomerSettingsActivity.class);
                     startActivity(intent);
                     finish();
-                    //Toast.makeText(CustomerHome.this, "setting",Toast.LENGTH_SHORT);
+                    Toast.makeText(CustomerHome.this, "setting",Toast.LENGTH_SHORT);
                 }
 
 

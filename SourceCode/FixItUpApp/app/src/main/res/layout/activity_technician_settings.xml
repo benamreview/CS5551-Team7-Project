@@ -25,6 +25,7 @@
                 android:id="@+id/editTextName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textStyle="bold"
                 android:layout_marginLeft="20dp"
                 android:ems="10"
                 android:hint="Enter your Name"
@@ -33,14 +34,14 @@
                 tools:layout_editor_absoluteY="30dp"
                 android:drawablePadding="12dp"
                 android:padding="8dp"
-                android:textColorHint="#fff"
+                android:textColorHint="#151414"
                 android:maxLines="1"
                 android:background="@android:color/transparent"
                 android:layout_marginTop="70dp"/>
             <View
                 android:layout_width="wrap_content"
                 android:layout_height="1dp"
-                android:background="#f9d7db" />
+                android:background="#151414" />
 
             <EditText
                 android:id="@+id/editTextConatact"
@@ -48,20 +49,21 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:hint="Enter your contact number"
+                android:textStyle="bold"
                 android:inputType="phone"
                 android:ems="12"
                 tools:layout_editor_absoluteX="84dp"
                 tools:layout_editor_absoluteY="30dp"
                 android:drawablePadding="12dp"
                 android:padding="8dp"
-                android:textColorHint="#fff"
+                android:textColorHint="#151414"
                 android:maxLines="1"
                 android:background="@android:color/transparent"
                 android:layout_marginTop="10dp"/>
             <View
                 android:layout_width="wrap_content"
                 android:layout_height="1dp"
-                android:background="#f9d7db" />
+                android:background="#151414" />
 
             <EditText
                 android:id="@+id/editTextZip"
@@ -71,18 +73,19 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:hint="Enter Zipcode"
+                android:textStyle="bold"
                 android:inputType="number"
                 tools:layout_editor_absoluteX="84dp"
                 tools:layout_editor_absoluteY="211dp"
                 android:drawablePadding="12dp"
                 android:padding="8dp"
-                android:textColorHint="#fff"
+                android:textColorHint="#151414"
                 android:maxLines="1"
                 android:background="@android:color/transparent"/>
             <View
                 android:layout_width="wrap_content"
                 android:layout_height="1dp"
-                android:background="#f9d7db" />
+                android:background="#151414" />
 
 
             <EditText
@@ -96,15 +99,16 @@
                 android:inputType="text"
                 tools:layout_editor_absoluteX="95dp"
                 tools:layout_editor_absoluteY="293dp"
+                android:textStyle="bold"
                 android:drawablePadding="12dp"
                 android:padding="8dp"
-                android:textColorHint="#fff"
+                android:textColorHint="#131212"
                 android:maxLines="1"
                 android:background="@android:color/transparent"/>
             <View
                 android:layout_width="wrap_content"
                 android:layout_height="1dp"
-                android:background="#f9d7db" />
+                android:background="#181717" />
             <EditText
                 android:id="@+id/editTextCharge"
                 android:layout_width="wrap_content"
@@ -116,15 +120,16 @@
                 tools:layout_editor_absoluteX="84dp"
                 tools:layout_editor_absoluteY="30dp"
                 android:drawablePadding="12dp"
+                android:textStyle="bold"
                 android:padding="8dp"
-                android:textColorHint="#fff"
+                android:textColorHint="#100f0f"
                 android:maxLines="1"
                 android:background="@android:color/transparent"
                 android:layout_marginTop="10dp"/>
             <View
                 android:layout_width="wrap_content"
                 android:layout_height="1dp"
-                android:background="#f9d7db" />
+                android:background="#151414" />
             <Button
                 android:id="@+id/detailButton"
                 style="@style/Base.TextAppearance.AppCompat.Body1"
@@ -136,11 +141,13 @@
                 android:background="@drawable/background_login"
                 android:clickable="true"
                 android:padding="16dp"
+                android:textStyle="bold"
                 android:text="CONFIRM CHANGES"
                 android:textAllCaps="false"
                 android:textAppearance="@style/TextAppearance.AppCompat.Button"
-                android:textColor="#f16f7d"
-                android:textSize="15sp" />
+                android:textColor="#151414"
+                android:textSize="15sp"
+                android:textFontWeight="400"/>
 
             <Button
                 android:id="@+id/back"
@@ -153,11 +160,13 @@
                 android:background="@drawable/background_login"
                 android:clickable="true"
                 android:padding="16dp"
+                android:textStyle="bold"
                 android:text="BACK"
                 android:textAllCaps="false"
                 android:textAppearance="@style/TextAppearance.AppCompat.Button"
-                android:textColor="#f16f7d"
-                android:textSize="18sp" />
+                android:textColor="#121111"
+                android:textSize="18sp"
+                android:textFontWeight="400"/>
         </LinearLayout>
     </ScrollView>
 

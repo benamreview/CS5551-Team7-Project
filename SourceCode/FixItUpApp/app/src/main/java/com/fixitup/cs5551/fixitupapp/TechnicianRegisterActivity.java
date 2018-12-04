@@ -75,6 +75,8 @@ public class TechnicianRegisterActivity extends AppCompatActivity {
             TechnicianDetails td = new TechnicianDetails( tEmail,tName,tMobile,tZipcode,tExpertise,tFee);
             dbr.child(id).setValue(td);
             Toast.makeText(this,"Technician is added",Toast.LENGTH_LONG).show();
+            intent = new Intent(TechnicianRegisterActivity.this, TechnicianHome.class);
+            startActivity(intent);
         } /*else{
             Toast.makeText(this,"Please enter details",Toast.LENGTH_LONG).show();
         }*/

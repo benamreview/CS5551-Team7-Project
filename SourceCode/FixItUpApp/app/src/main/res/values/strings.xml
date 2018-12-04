@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">FixItUpApp</string>
+    <string name="hint1"><i>Your hint here</i></string>
+    <string name="Open">Navbar</string>
+    <string name="Close">NavBar</string>
     <string name="title_activity_technician_map">Map</string>
     <string name="address_text">"Address: %1$s \n Timestamp: %2$tr"</string>
     <string name="location_permission_denied">Location permissions denied,
@@ -16,4 +19,10 @@
     \nPlease choose accordingly.</string>
     <string name="warning_msg3">WARNING!!!\nIf you go back, all of your unsaved modification will be discarded!</string>
     <string name="warning_msg4">WARNING!!!\nIf session is ended, order is complete and final. Do you want to proceed?</string>
+    <string-array name="technician">
+        <item>plumber</item>
+        <item>electrician</item>
+        <item>welder</item>
+        <item>mechanic</item>
+    </string-array>
 </resources>

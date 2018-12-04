@@ -62,10 +62,12 @@ public class TechnicianSettingsActivity extends AppCompatActivity {
                     else if (ds.getKey().equals("type")){
                         specialization.setText(ds.getValue().toString());
                     }
+                    else if (ds.getKey().equals("fee")){
+                        fee.setText(ds.getValue().toString());
+                    }
                 }
             }
-            //For tomorrow: add logic for confirm and back button
-            //Add fee and calculation (if possible)
+
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {

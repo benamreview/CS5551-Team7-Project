@@ -27,16 +27,17 @@
         android:inputType="textEmailAddress"
         android:ems="10"
         android:drawablePadding="12dp"
+        android:textStyle="bold"
         android:padding="8dp"
-        android:textColorHint="#fff"
+        android:textColorHint="#151414"
         android:maxLines="1"
         android:background="@android:color/transparent"
-        android:layout_marginTop="70dp"/>
+        android:layout_marginTop="100dp"/>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#f9d7db" />
+                android:background="#1b1a1a" />
 
             <EditText
                 android:layout_width="match_parent"
@@ -47,27 +48,30 @@
                 android:ems="10"
                 android:drawablePadding="12dp"
                 android:padding="8dp"
-                android:textColorHint="#fff"
+                android:textStyle="bold"
+                android:textColorHint="#161616"
                 android:maxLines="1"
                 android:background="@android:color/transparent"
-                android:layout_marginTop="4dp"/>
+                android:layout_marginTop="10dp"/>
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#f9d7db" />
+                android:background="#121111" />
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text = "Login"
                 android:id = "@+id/login"
                 android:background="@drawable/background_login"
-                android:textColor="#f16f7d"
+                android:textColor="#151414"
                 android:textAllCaps="false"
+                android:textStyle="bold"
                 android:padding="16dp"
                 android:clickable="true"
                 style="@style/Base.TextAppearance.AppCompat.Body1"
                 android:layout_marginTop="24dp"
-                android:textSize="18sp"/>
+                android:textSize="18sp"
+                android:textFontWeight="400"/>
         </LinearLayout>
     </ScrollView>
 

@@ -88,7 +88,7 @@ public class TechnicianRatingActivity extends AppCompatActivity {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    intent = new Intent(TechnicianRatingActivity.this, TechnicianHome.class);
+                    intent = new Intent(TechnicianRatingActivity.this, TechnicianMapActivity.class);
                     startActivity(intent);
                 }
             }

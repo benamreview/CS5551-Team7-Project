@@ -1,5 +1,7 @@
 package com.fixitup.cs5551.fixitupapp;
 
+import android.os.Parcelable;
+
 public class TechnicianDetails {
     String email;
     String name;

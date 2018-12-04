@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".TechnicianLoginScreenActivity">
+    tools:context=".TechnicianLoginScreenActivity"
+    android:background="@drawable/new_login_gradients">
 
     <Button
         android:id="@+id/signInBtn"
@@ -13,7 +14,15 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="136dp"
-        android:text="Sign In" />
+        android:text="Sign In"
+        android:background="@drawable/background_login"
+        android:textStyle="bold"
+        android:textColor="#151414"
+        android:textAllCaps="false"
+        android:padding="16dp"
+        android:clickable="true"
+        android:textSize="18dp"
+        style="@style/Base.TextAppearance.AppCompat.Body1"/>
 
     <Button
         android:id="@+id/signUpBtn"
@@ -22,7 +31,15 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="233dp"
-        android:text="Sign Up" />
+        android:textStyle="bold"
+        android:text="Sign Up"
+        android:background="@drawable/background_login"
+        android:textColor="#121111"
+        android:textAllCaps="false"
+        android:padding="16dp"
+        android:textSize="18dp"
+        android:clickable="true"
+        style="@style/Base.TextAppearance.AppCompat.Body1"/>
 
     <TextView
         android:id="@+id/textView"
@@ -30,9 +47,10 @@
         android:layout_height="58dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
+        android:textStyle="bold"
         android:layout_marginTop="42dp"
         android:text="Welcome to our FixitUp's Technician Team! \nPlease sign in or create a new account!"
-        android:textSize="17dp"
+        android:textSize="18dp"
         android:visibility="visible"
         tools:text="Welcome to our FixitUp's Technician Team! \nPlease sign in or create a new account!" />
 </RelativeLayout>
